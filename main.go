@@ -1,7 +1,15 @@
 package main
 
-import "github.com/juparefe/Golang-Ecommerce/variables"
+import (
+	"fmt"
+
+	integers "github.com/juparefe/Golang-Ecommerce/variables"
+)
 
 func main() {
-	variables.ShowIntegers()
+	integers.ShowIntegers()
+	integers.OtherVariables()
+	status, text := integers.ConvertToText(1234)
+	fmt.Println("Status:", status)
+	fmt.Println("Text:", text)
 }
