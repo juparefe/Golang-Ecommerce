@@ -5,7 +5,10 @@ import (
 )
 
 func ConvertToInteger(text string) (int, string) {
-	number, _ := strconv.Atoi(text)
+	number, err := strconv.Atoi(text)
+	if err != nil {
+		return 0, "Hubo un error" + err.Error()
+	}
 	var hundred string
 	if number > 100 {
 		hundred = "Es mayor a 100"
