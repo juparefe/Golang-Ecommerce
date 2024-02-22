@@ -1,4 +1,4 @@
-package integers
+package variables
 
 import (
 	"fmt"
