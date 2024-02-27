@@ -5,6 +5,7 @@ import (
 
 	exercises "github.com/juparefe/Golang-Ecommerce/learning/exercises"
 	files "github.com/juparefe/Golang-Ecommerce/learning/files"
+	functions "github.com/juparefe/Golang-Ecommerce/learning/functions"
 	iterations "github.com/juparefe/Golang-Ecommerce/learning/iterations"
 	keyboard "github.com/juparefe/Golang-Ecommerce/learning/keyboard"
 	variables "github.com/juparefe/Golang-Ecommerce/learning/variables"
@@ -25,6 +26,9 @@ func main() {
 		fmt.Println(exercises.ValidateMistake())
 		files.SaveFile()
 		files.AppendFile()
+		files.ReadFile()
+		functions.Calculations()
+		functions.CallClosure()
 	}
-	files.ReadFile()
+	functions.Exponentiation(2)
 }
