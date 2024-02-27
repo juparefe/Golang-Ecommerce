@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	arrays_slices "github.com/juparefe/Golang-Ecommerce/learning/arrays_slices"
 	exercises "github.com/juparefe/Golang-Ecommerce/learning/exercises"
 	files "github.com/juparefe/Golang-Ecommerce/learning/files"
 	functions "github.com/juparefe/Golang-Ecommerce/learning/functions"
@@ -29,6 +30,7 @@ func main() {
 		files.ReadFile()
 		functions.Calculations()
 		functions.CallClosure()
+		functions.Exponentiation(2)
 	}
-	functions.Exponentiation(2)
+	arrays_slices.ShowArrays()
 }
