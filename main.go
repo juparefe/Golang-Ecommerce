@@ -9,6 +9,8 @@ import (
 	functions "github.com/juparefe/Golang-Ecommerce/learning/functions"
 	iterations "github.com/juparefe/Golang-Ecommerce/learning/iterations"
 	keyboard "github.com/juparefe/Golang-Ecommerce/learning/keyboard"
+	maps "github.com/juparefe/Golang-Ecommerce/learning/maps"
+	"github.com/juparefe/Golang-Ecommerce/learning/users"
 	variables "github.com/juparefe/Golang-Ecommerce/learning/variables"
 )
 
@@ -31,6 +33,10 @@ func main() {
 		functions.Calculations()
 		functions.CallClosure()
 		functions.Exponentiation(2)
+		arrays_slices.ShowArrays()
+		arrays_slices.ShowSlices()
+		arrays_slices.StorageCapacity()
+		maps.ShowMaps()
 	}
-	arrays_slices.ShowArrays()
+	users.AddUser()
 }
