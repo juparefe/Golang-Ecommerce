@@ -10,7 +10,8 @@ import (
 	iterations "github.com/juparefe/Golang-Ecommerce/learning/iterations"
 	keyboard "github.com/juparefe/Golang-Ecommerce/learning/keyboard"
 	maps "github.com/juparefe/Golang-Ecommerce/learning/maps"
-	"github.com/juparefe/Golang-Ecommerce/learning/users"
+	models "github.com/juparefe/Golang-Ecommerce/learning/models"
+	users "github.com/juparefe/Golang-Ecommerce/learning/users"
 	variables "github.com/juparefe/Golang-Ecommerce/learning/variables"
 )
 
@@ -37,6 +38,11 @@ func main() {
 		arrays_slices.ShowSlices()
 		arrays_slices.StorageCapacity()
 		maps.ShowMaps()
+		users.AddUser()
+		Juan := new(models.Man)
+		exercises.HumansBreathing(Juan)
+		Lina := new(models.Women)
+		exercises.HumansBreathing(Lina)
 	}
-	users.AddUser()
+
 }
