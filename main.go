@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	arrays_slices "github.com/juparefe/Golang-Ecommerce/learning/arrays_slices"
+	defer_panic "github.com/juparefe/Golang-Ecommerce/learning/defer_panic"
 	exercises "github.com/juparefe/Golang-Ecommerce/learning/exercises"
 	files "github.com/juparefe/Golang-Ecommerce/learning/files"
 	functions "github.com/juparefe/Golang-Ecommerce/learning/functions"
@@ -43,6 +44,9 @@ func main() {
 		exercises.HumansBreathing(Juan)
 		Lina := new(models.Women)
 		exercises.HumansBreathing(Lina)
+		defer_panic.ShowDefer()
+		defer_panic.ShowPanic()
+		defer_panic.ShowRecover()
 	}
 
 }
