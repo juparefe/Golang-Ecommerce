@@ -8,6 +8,7 @@ import (
 	exercises "github.com/juparefe/Golang-Ecommerce/learning/exercises"
 	files "github.com/juparefe/Golang-Ecommerce/learning/files"
 	functions "github.com/juparefe/Golang-Ecommerce/learning/functions"
+	goroutines "github.com/juparefe/Golang-Ecommerce/learning/go_routines"
 	iterations "github.com/juparefe/Golang-Ecommerce/learning/iterations"
 	keyboard "github.com/juparefe/Golang-Ecommerce/learning/keyboard"
 	maps "github.com/juparefe/Golang-Ecommerce/learning/maps"
@@ -47,6 +48,10 @@ func main() {
 		defer_panic.ShowDefer()
 		defer_panic.ShowPanic()
 		defer_panic.ShowRecover()
+		goroutines.SlowName("Juan Test")
+		go goroutines.SlowName("Juan Test")
+		fmt.Println("Estoy aqui")
+		var x string
+		fmt.Scanln(&x)
 	}
-
 }
