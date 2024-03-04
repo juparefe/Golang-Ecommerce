@@ -20,38 +20,55 @@ import (
 func main() {
 	var showLearning = false
 	if showLearning {
+		// Tipos de variables
 		variables.ShowIntegers()
 		variables.OtherVariables()
 		status, text := variables.ConvertToText(1234)
 		fmt.Println("Correct:", status)
 		fmt.Println("Text:", text)
 		variables.CheckSystem()
-		exercises.ConvertToInteger("500")
+		// Recibir datos del usuario
 		keyboard.NumbersInput()
+		// Ciclos
 		iterations.Iterate()
-		fmt.Println(exercises.ValidateMistake())
+		// Manejo de archivos
 		files.SaveFile()
 		files.AppendFile()
 		files.ReadFile()
+		// Funciones
 		functions.Calculations()
 		functions.CallClosure()
 		functions.Exponentiation(2)
+		// Arrays, slices y maps
 		arrays_slices.ShowArrays()
 		arrays_slices.ShowSlices()
 		arrays_slices.StorageCapacity()
 		maps.ShowMaps()
+		// Interfaces y modelos
 		users.AddUser()
 		Juan := new(models.Man)
 		exercises.HumansBreathing(Juan)
 		Lina := new(models.Women)
 		exercises.HumansBreathing(Lina)
+		// Defer, panic y recover
 		defer_panic.ShowDefer()
 		defer_panic.ShowPanic()
 		defer_panic.ShowRecover()
-		goroutines.SlowName("Juan Test")
-		go goroutines.SlowName("Juan Test")
+		// Asincronia
+		goroutines.AsynchronousName("Juan Test")
+		go goroutines.AsynchronousName("Juan Test")
 		fmt.Println("Estoy aqui")
 		var x string
 		fmt.Scanln(&x)
+		// Canales
+		channel := make(chan bool)
+		go goroutines.ShowChannels("Juan Test", channel)
+		<-channel
+		// Ejercicios
+		exercises.ConvertToInteger("500")
+		fmt.Println(exercises.ValidateMistake())
 	}
+	channel := make(chan bool)
+	go goroutines.ShowChannels("Juan Test", channel)
+	<-channel
 }
