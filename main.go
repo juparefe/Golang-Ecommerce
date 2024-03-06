@@ -12,6 +12,7 @@ import (
 	iterations "github.com/juparefe/Golang-Ecommerce/learning/iterations"
 	keyboard "github.com/juparefe/Golang-Ecommerce/learning/keyboard"
 	maps "github.com/juparefe/Golang-Ecommerce/learning/maps"
+	middlewares "github.com/juparefe/Golang-Ecommerce/learning/middlewares"
 	models "github.com/juparefe/Golang-Ecommerce/learning/models"
 	users "github.com/juparefe/Golang-Ecommerce/learning/users"
 	variables "github.com/juparefe/Golang-Ecommerce/learning/variables"
@@ -69,9 +70,10 @@ func main() {
 		}()
 		// Manejo de servidores
 		webserver.MyWebServer()
+		// Middlewares
 		// Ejercicios
 		exercises.ConvertToInteger("500")
 		fmt.Println(exercises.ValidateMistake())
 	}
-
+	middlewares.MyMiddleware()
 }
