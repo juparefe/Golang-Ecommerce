@@ -15,6 +15,7 @@ import (
 	models "github.com/juparefe/Golang-Ecommerce/learning/models"
 	users "github.com/juparefe/Golang-Ecommerce/learning/users"
 	variables "github.com/juparefe/Golang-Ecommerce/learning/variables"
+	webserver "github.com/juparefe/Golang-Ecommerce/learning/webserver"
 )
 
 func main() {
@@ -63,12 +64,14 @@ func main() {
 		// Canales
 		channel := make(chan bool)
 		go goroutines.ShowChannels("Juan Test", channel)
-		<-channel
+		defer func() {
+			<-channel
+		}()
+		// Manejo de servidores
+		webserver.MyWebServer()
 		// Ejercicios
 		exercises.ConvertToInteger("500")
 		fmt.Println(exercises.ValidateMistake())
 	}
-	channel := make(chan bool)
-	go goroutines.ShowChannels("Juan Test", channel)
-	<-channel
+
 }
