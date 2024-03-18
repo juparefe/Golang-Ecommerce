@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	//"strconv"
-	//"strings"
+	"strconv"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/juparefe/Golang-Ecommerce/models"
-	//"github.com/juparefe/Golang-Ecommerce/tools"
+	"github.com/juparefe/Golang-Ecommerce/tools"
 )
 
 func InsertCategory(c models.Category) (int64, error) {
@@ -38,4 +38,34 @@ func InsertCategory(c models.Category) (int64, error) {
 	fmt.Println("InsertCategory > Succesfull execution: ", LastInsertId)
 	return LastInsertId, nil
 
+}
+
+func UpdateCategory(c models.Category) error {
+	fmt.Println("Executing UpdateCategory in database")
+	err := DbConnect()
+	if err != nil {
+		return 0, err
+	}
+	defer Db.Close()
+
+	script := "UPDATE category SET "
+	if len(c.CategName) > 0 {
+		script += " Categ_Name = '" + tools.EscapeString(c.CategName) + "'"
+	}
+	if len(c.CategPath) > 0 {
+		if !strings.HasSufix(script, "SET ") {
+			script += ", "
+		}
+		script += " Categ_Path = '" + tools.EscapeString(c.CategPath) + "'"
+	}
+	script += " WHERE Categ_ID = " + strconv.Itoa(c.CategID)
+	fmt.Println("Script: ", script)
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Error:", err.Error())
+		return err
+	}
+
+	fmt.Println("UpdateCategory > Succesfull execution")
+	return nil
 }

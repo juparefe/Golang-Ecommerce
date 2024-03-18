@@ -34,3 +34,27 @@ func InsertCategory(body, User string) (int, string) {
 
 	return 200, "{ CategID: " + strconv.Itoa(int(result)) + "}"
 }
+
+func UpdateCategory(body, User string, id int) (int, string) {
+	var t models.Category
+	err := json.Unmarshal([]byte(body), &t)
+	if err != nil {
+		return 400, "The request data is incorrect: " + err.Error()
+	}
+	if (len(t.CategName) == 0) && (len(t.CategPath) == 0) {
+		return 400, "You must specify the name and the path of the category to update"
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	t.CategID = id
+	err2 := db.UpdateCategory(t)
+	if err2 != nil {
+		return 400, "Error when updating into the database: " + t.CategName + " > " + err2.Error()
+	}
+
+	return 200, "Update Ok"
+}
