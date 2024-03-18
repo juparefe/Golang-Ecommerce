@@ -50,7 +50,7 @@ func UpdateCategory(body, User string, id int) (int, string) {
 		return 400, msg
 	}
 
-	t.CategID = id
+	t.CategId = id
 	err2 := db.UpdateCategory(t)
 	if err2 != nil {
 		return 400, "Error when updating into the database: " + t.CategName + " > " + err2.Error()

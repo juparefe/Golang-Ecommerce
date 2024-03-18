@@ -44,7 +44,7 @@ func UpdateCategory(c models.Category) error {
 	fmt.Println("Executing UpdateCategory in database")
 	err := DbConnect()
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer Db.Close()
 
@@ -53,12 +53,12 @@ func UpdateCategory(c models.Category) error {
 		script += " Categ_Name = '" + tools.EscapeString(c.CategName) + "'"
 	}
 	if len(c.CategPath) > 0 {
-		if !strings.HasSufix(script, "SET ") {
+		if !strings.HasSuffix(script, "SET ") {
 			script += ", "
 		}
 		script += " Categ_Path = '" + tools.EscapeString(c.CategPath) + "'"
 	}
-	script += " WHERE Categ_ID = " + strconv.Itoa(c.CategID)
+	script += " WHERE Categ_ID = " + strconv.Itoa(c.CategId)
 	fmt.Println("Script: ", script)
 	_, err = Db.Exec(script)
 	if err != nil {
@@ -74,7 +74,7 @@ func DeleteCategory(id int) error {
 	fmt.Println("Executing DeleteCategory in database")
 	err := DbConnect()
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer Db.Close()
 
