@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+
 	//"strconv"
 	//"strings"
 
@@ -11,7 +12,7 @@ import (
 	//"github.com/juparefe/Golang-Ecommerce/tools"
 )
 
-func InsertCategory(c models.Category) (int, error) (int64, error) {
+func InsertCategory(c models.Category) (int64, error) {
 	fmt.Println("Executing InsertCategory in database")
 	err := DbConnect()
 	if err != nil {
@@ -36,5 +37,5 @@ func InsertCategory(c models.Category) (int, error) (int64, error) {
 
 	fmt.Println("InsertCategory > Succesfull execution: ", LastInsertId)
 	return LastInsertId, nil
-	
+
 }
