@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/juparefe/Golang-Ecommerce/auth"
+	"github.com/juparefe/Golang-Ecommerce/routers"
 )
 
 func Handlers(path string, method string, body string, headers map[string]string, request events.APIGatewayV2HTTPRequest) (int, string) {
@@ -67,6 +68,10 @@ func ProcessProducts(body, path, method, user string, id int, request events.API
 }
 
 func ProcessCategories(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	switch method {
+	case "POST":
+		return routers.InsertCategory(body, user)
+	}
 	return 400, "Method invalid"
 }
 
