@@ -19,16 +19,16 @@ func Handlers(path string, method string, body string, headers map[string]string
 	}
 
 	fmt.Println("Path to validate: ", path[0:5])
-	switch path[1:5] {
-	case "addr":
+	switch path[0:5] {
+	case "addre":
 		return ProcessAdresses(body, path, method, user, idn, request)
-	case "cate":
+	case "categ":
 		return ProcessCategories(body, path, method, user, idn, request)
-	case "orde":
+	case "order":
 		return ProcessOrders(body, path, method, user, idn, request)
-	case "prod":
+	case "produ":
 		return ProcessProducts(body, path, method, user, idn, request)
-	case "stoc":
+	case "stock":
 		return ProcessStock(body, path, method, user, idn, request)
 	case "user":
 		return ProcessUsers(body, path, method, user, id, request)
