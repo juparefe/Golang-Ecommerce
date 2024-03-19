@@ -18,7 +18,7 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return statusCode, user
 	}
 
-	switch path[0:4] {
+	switch path[1:5] {
 	case "addr":
 		return ProcessAdresses(body, path, method, user, idn, request)
 	case "cate":
