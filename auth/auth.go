@@ -25,7 +25,7 @@ func ValidateToken(token string) (bool, error, string) {
 	parts := strings.Split(token, ".")
 
 	if len(parts) != 3 {
-		fmt.Println("Invalid token")
+		fmt.Println("Invalid token, it must have 3 parts: ", len(parts))
 		return false, nil, "Invalid token"
 	}
 
@@ -34,6 +34,7 @@ func ValidateToken(token string) (bool, error, string) {
 		fmt.Println("The token cannot be decoded: ", err.Error())
 		return false, err, err.Error()
 	}
+	fmt.Println("User info: ", userInfo)
 
 	var tkj TokenJSON
 	err = json.Unmarshal(userInfo, &tkj)
@@ -41,6 +42,7 @@ func ValidateToken(token string) (bool, error, string) {
 		fmt.Println("Cannot decode json structure: ", err.Error())
 		return false, err, err.Error()
 	}
+	fmt.Println("Token JSON: ", tkj)
 
 	// Fecha actual
 	now := time.Now()

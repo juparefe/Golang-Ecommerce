@@ -40,8 +40,7 @@ func ValidateAuthorization(path string, method string, headers map[string]string
 		return true, 200, ""
 	}
 
-	token := headers["Authorization"]
-	fmt.Println("Authorization: ", headers["Authorization"])
+	token := headers["authorization"]
 	fmt.Println("authorization: ", headers["authorization"])
 	if len(token) == 0 {
 		return false, 401, "Token required"
