@@ -18,6 +18,7 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return statusCode, user
 	}
 
+	fmt.Println("Path to validate: ", path[0:5])
 	switch path[1:5] {
 	case "addr":
 		return ProcessAdresses(body, path, method, user, idn, request)
@@ -69,6 +70,7 @@ func ProcessProducts(body, path, method, user string, id int, request events.API
 }
 
 func ProcessCategories(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessCategories with method: ", method)
 	switch method {
 	case "POST":
 		return routers.InsertCategory(body, user)
