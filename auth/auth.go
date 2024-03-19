@@ -30,7 +30,7 @@ func ValidateToken(token string) (bool, error, string) {
 	}
 
 	part1 := string(parts[1])
-	fmt.Println("Part 1", part1)
+	fmt.Println("Part 1", part1, "a")
 	userInfo, err := base64.StdEncoding.DecodeString(part1)
 	fmt.Println("User info: ", userInfo)
 	if err != nil {
