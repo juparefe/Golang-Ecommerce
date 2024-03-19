@@ -29,6 +29,7 @@ func ValidateToken(token string) (bool, error, string) {
 		return false, nil, "Invalid token"
 	}
 
+	fmt.Println("Part 1", parts[1])
 	userInfo, err := base64.StdEncoding.DecodeString(parts[1])
 	if err != nil {
 		fmt.Println("The token cannot be decoded: ", err.Error())
