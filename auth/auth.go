@@ -29,8 +29,8 @@ func ValidateToken(token string) (bool, error, string) {
 		return false, nil, "Invalid token"
 	}
 
-	part1 := string(parts[1])
-	fmt.Println("Part 1", part1, "a")
+	part1 := parts[1] + "="
+	fmt.Println("Part 1", part1+"=")
 	userInfo, err := base64.StdEncoding.DecodeString(part1)
 	fmt.Println("User info: ", userInfo)
 	if err != nil {
