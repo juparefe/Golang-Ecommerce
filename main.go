@@ -59,13 +59,12 @@ func ExecuteLambda(context context.Context, request events.APIGatewayV2HTTPReque
 }
 
 func ValidateParameters() bool {
-	fmt.Println("Start ValidateParameters")
 	_, bringParameter := os.LookupEnv("SecretName")
-	if !ValidateParameters() {
+	if !bringParameter {
 		return bringParameter
 	}
 	_, bringParameter = os.LookupEnv("UrlPrefix")
-	if !ValidateParameters() {
+	if !bringParameter {
 		return bringParameter
 	}
 	return bringParameter
