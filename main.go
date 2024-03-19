@@ -24,6 +24,7 @@ func ExecuteLambda(context context.Context, request events.APIGatewayV2HTTPReque
 	awsgo.StartAWS()
 	// Validar que esten todos los parametros en las variables de entorno
 	if !ValidateParameters() {
+		fmt.Println("Some parameter is missing, it must have SecretName and UrlPrefix")
 		panic("Some parameter is missing, it must have SecretName and UrlPrefix")
 	}
 	var res *events.APIGatewayProxyResponse
@@ -58,6 +59,7 @@ func ExecuteLambda(context context.Context, request events.APIGatewayV2HTTPReque
 }
 
 func ValidateParameters() bool {
+	fmt.Println("Start ValidateParameters")
 	_, bringParameter := os.LookupEnv("SecretName")
 	if !ValidateParameters() {
 		return bringParameter

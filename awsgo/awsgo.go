@@ -16,9 +16,10 @@ func StartAWS() {
 	Context = context.TODO()
 	fmt.Println("Getting Context: ", Context)
 	Config, err = config.LoadDefaultConfig(Context, config.WithDefaultRegion("us-east-1"))
+	fmt.Println("Getting Config: ", Config)
 
 	if err != nil {
-		fmt.Print("Error loading awsgo: ", err.Error())
+		fmt.Print("Error loading awsgo: ", err)
 		panic("Error al cargar la configuracion .aws/config" + err.Error())
 	}
 }
