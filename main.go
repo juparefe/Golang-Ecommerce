@@ -14,10 +14,12 @@ import (
 )
 
 func main() {
+	fmt.Println("Start lambda")
 	lambda.Start(ExecuteLambda)
 }
 
 func ExecuteLambda(context context.Context, request events.APIGatewayV2HTTPRequest) (*events.APIGatewayProxyResponse, error) {
+	fmt.Println("Request:", context, request)
 	// Obtener context y config de AWS
 	awsgo.StartAWS()
 	// Validar que esten todos los parametros en las variables de entorno
