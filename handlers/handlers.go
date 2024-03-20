@@ -96,7 +96,7 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 }
 
 func ProcessStock(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
-	return 400, "Method invalid"
+	return routers.UpdateStock(body, user, id)
 }
 
 func ProcessAdresses(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {

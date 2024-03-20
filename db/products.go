@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -231,4 +232,27 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	ProductRes.Data = Prod
 	fmt.Println("SelectProducts > Succesfull execution")
 	return ProductRes, nil
+}
+
+func UpdateStock(p models.Product) error {
+	fmt.Println("Executing UpdateStock in database")
+	if p.ProdStock == 0 {
+		return errors.New("the stock to modify must be greater than 0")
+	}
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	script := "UPDATE products SET Prod_Stock = Prod_Stock + " + strconv.Itoa(p.ProdStock) + " WHERE Prod_Id = " + strconv.Itoa(p.ProdId) + ";"
+	fmt.Println("Script Update stock: ", script)
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Error:", err.Error())
+		return err
+	}
+
+	fmt.Println("UpdateStock > Succesfull execution")
+	return nil
 }

@@ -122,3 +122,24 @@ func SelectProducts(request events.APIGatewayV2HTTPRequest) (int, string) {
 	}
 	return 200, string(Product)
 }
+
+func UpdateStock(body, User string, id int) (int, string) {
+	var t models.Product
+	err := json.Unmarshal([]byte(body), &t)
+	if err != nil {
+		return 400, "The request data is incorrect: " + err.Error()
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	t.ProdId = id
+	err2 := db.UpdateStock(t)
+	if err2 != nil {
+		return 400, "Error when updating stock into the database: " + strconv.Itoa(id) + " > " + err2.Error()
+	}
+
+	return 200, "Update Ok"
+}
