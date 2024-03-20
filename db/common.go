@@ -57,7 +57,7 @@ func UserIsAdmin(userUUID string) (bool, string) {
 	}
 	defer Db.Close()
 	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status = 0"
-	fmt.Println("Script: ", script)
+	fmt.Println("Script Select: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
