@@ -75,7 +75,7 @@ func ProcessProducts(body, path, method, user string, id int, request events.API
 	case "DELETE":
 		return routers.DeleteProduct(user, id)
 	case "GET":
-		return routers.SelectCategories(request)
+		return routers.SelectProducts(request)
 	}
 	return 400, "Method invalid"
 }
