@@ -73,9 +73,9 @@ func ProcessProducts(body, path, method, user string, id int, request events.API
 	case "PUT":
 		return routers.UpdateProduct(body, user, id)
 	case "DELETE":
-		return routers.DeleteCategory(user, id)
+		return routers.DeleteProduct(user, id)
 	case "GET":
-		return routers.SelectCategories(body, request)
+		return routers.SelectCategories(request)
 	}
 	return 400, "Method invalid"
 }
@@ -90,7 +90,7 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 	case "DELETE":
 		return routers.DeleteCategory(user, id)
 	case "GET":
-		return routers.SelectCategories(body, request)
+		return routers.SelectCategories(request)
 	}
 	return 400, "Method invalid"
 }

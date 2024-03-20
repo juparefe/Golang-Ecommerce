@@ -52,3 +52,21 @@ func UpdateProduct(body, User string, id int) (int, string) {
 
 	return 200, "Update Ok"
 }
+
+func DeleteProduct(User string, id int) (int, string) {
+	if id == 0 {
+		return 400, "The request data (ID) is incorrect"
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	err := db.DeleteProduct(id)
+	if err != nil {
+		return 400, "Error when deleting into the database: " + strconv.Itoa(id) + " > " + err.Error()
+	}
+
+	return 200, "Delete Ok"
+}

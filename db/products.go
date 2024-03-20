@@ -77,7 +77,7 @@ func UpdateProduct(p models.Product) error {
 	}
 	defer Db.Close()
 
-	script := "UPDATE category SET "
+	script := "UPDATE products SET "
 	script = tools.CreateScript(script, "Prod_Title", "S", p.ProdTitle, 0, 0)
 	script = tools.CreateScript(script, "Prod_Prod_Description", "S", p.ProdDescription, 0, 0)
 	script = tools.CreateScript(script, "Prod_Price", "F", "", 0, p.ProdPrice)
@@ -93,5 +93,25 @@ func UpdateProduct(p models.Product) error {
 	}
 
 	fmt.Println("UpdateProduct > Succesfull execution")
+	return nil
+}
+
+func DeleteProduct(id int) error {
+	fmt.Println("Executing DeleteProduct in database")
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	script := "DELETE FROM products WHERE Prod_Id = " + strconv.Itoa(id)
+	fmt.Println("Script Delete: ", script)
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Error:", err.Error())
+		return err
+	}
+
+	fmt.Println("DeleteProduct > Succesfull execution")
 	return nil
 }

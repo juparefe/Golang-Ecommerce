@@ -78,7 +78,7 @@ func DeleteCategory(User string, id int) (int, string) {
 	return 200, "Delete Ok"
 }
 
-func SelectCategories(body string, request events.APIGatewayV2HTTPRequest) (int, string) {
+func SelectCategories(request events.APIGatewayV2HTTPRequest) (int, string) {
 	var err error
 	var CategId int
 	var Slug string
