@@ -33,7 +33,7 @@ func InsertCategory(body, User string) (int, string) {
 		return 400, "Error when inserting into the database: " + t.CategName + " > " + err2.Error()
 	}
 
-	return 200, "{ CategID: " + strconv.Itoa(int(result)) + "}"
+	return 200, "{ CategoryID: " + strconv.Itoa(int(result)) + "}"
 }
 
 func UpdateCategory(body, User string, id int) (int, string) {

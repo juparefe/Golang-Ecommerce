@@ -66,6 +66,17 @@ func ProcessUsers(body, path, method, user, id string, request events.APIGateway
 }
 
 func ProcessProducts(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessProducts with method: ", method)
+	switch method {
+	case "POST":
+		return routers.InsertProduct(body, user)
+	case "PUT":
+		return routers.UpdateCategory(body, user, id)
+	case "DELETE":
+		return routers.DeleteCategory(user, id)
+	case "GET":
+		return routers.SelectCategories(body, request)
+	}
 	return 400, "Method invalid"
 }
 
