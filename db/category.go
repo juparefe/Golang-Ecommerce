@@ -110,20 +110,24 @@ func SelectCategories(CategId int, Slug string) ([]models.Category, error) {
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
+	if err != nil {
+		fmt.Println("Error getting categories:", err.Error())
+		return Categ, err
+	}
 	for rows.Next() {
 		var c models.Category
 		var categId sql.NullInt32
 		var categName sql.NullString
 		var categPath sql.NullString
 
-		err := rows.Scan(&categId, &categName, &categPath)
+		err = rows.Scan(&categId, &categName, &categPath)
 		if err != nil {
 			fmt.Println("Error adding row:", err.Error())
 			return Categ, err
 		}
 		c.CategId = int(categId.Int32)
 		c.CategName = categName.String
-		c.CategPath = c.categPath.String
+		c.CategPath = categPath.String
 		Categ = append(Categ, c)
 	}
 
