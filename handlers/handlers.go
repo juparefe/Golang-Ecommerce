@@ -71,7 +71,7 @@ func ProcessProducts(body, path, method, user string, id int, request events.API
 	case "POST":
 		return routers.InsertProduct(body, user)
 	case "PUT":
-		return routers.UpdateCategory(body, user, id)
+		return routers.UpdateProduct(body, user, id)
 	case "DELETE":
 		return routers.DeleteCategory(user, id)
 	case "GET":
