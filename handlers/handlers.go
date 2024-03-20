@@ -78,6 +78,8 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 		return routers.UpdateCategory(body, user, id)
 	case "DELETE":
 		return routers.DeleteCategory(user, id)
+	case "GET":
+		return routers.SelectCategories(body, request)
 	}
 	return 400, "Method invalid"
 }

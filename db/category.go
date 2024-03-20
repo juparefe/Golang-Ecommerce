@@ -124,10 +124,9 @@ func SelectCategories(CategId int, Slug string) ([]models.Category, error) {
 		c.CategId = int(categId.Int32)
 		c.CategName = categName.String
 		c.CategPath = c.categPath.String
-	}
-	if err != nil {
-		fmt.Println("Error:", err.Error())
-		return err
+		Categ = append(Categ, c)
 	}
 
+	fmt.Println("SelectCategory > Succesfull execution")
+	return Categ, nil
 }
