@@ -81,7 +81,7 @@ func UpdateProduct(p models.Product) error {
 
 	script := "UPDATE products SET "
 	script = tools.CreateScript(script, "Prod_Title", "S", p.ProdTitle, 0, 0)
-	script = tools.CreateScript(script, "Prod_Prod_Description", "S", p.ProdDescription, 0, 0)
+	script = tools.CreateScript(script, "Prod_Description", "S", p.ProdDescription, 0, 0)
 	script = tools.CreateScript(script, "Prod_Price", "F", "", 0, p.ProdPrice)
 	script = tools.CreateScript(script, "Prod_CategoryId", "N", "", p.ProdCategId, 0)
 	script = tools.CreateScript(script, "Prod_Stock", "N", "", p.ProdStock, 0)
