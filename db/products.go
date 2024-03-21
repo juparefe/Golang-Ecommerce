@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/juparefe/Golang-Ecommerce/models"
@@ -211,7 +210,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		var p models.Product
 		var ProdId sql.NullInt32
 		var ProdTitle, ProdDescription sql.NullString
-		var ProdCreatedAt, ProdUpdated time.Time
+		var ProdCreatedAt, ProdUpdated *sql.NullTime
 		var ProdPrice sql.NullFloat64
 		var ProdPath sql.NullString
 		var ProdCategoryId, ProdStock sql.NullInt32
@@ -223,8 +222,8 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		p.ProdId = int(ProdId.Int32)
 		p.ProdTitle = ProdTitle.String
 		p.ProdDescription = ProdDescription.String
-		p.ProdCreatedAt = ProdCreatedAt.Format("2006-01-02 15:04:05")
-		p.ProdUpdated = ProdUpdated.Format("2006-01-02 15:04:05")
+		p.ProdCreatedAt = ProdCreatedAt.Time.String()
+		p.ProdUpdated = ProdUpdated.Time.String()
 		p.ProdPrice = ProdPrice.Float64
 		p.ProdPath = ProdPath.String
 		p.ProdCategId = int(ProdCategoryId.Int32)
