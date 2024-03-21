@@ -49,8 +49,6 @@ func ConnectionString(keys models.SecretRDSJson) string {
 }
 
 func UserIsAdmin(userUUID string) (bool, string) {
-	fmt.Println("Executing IsAdmin")
-
 	err := DbConnect()
 	if err != nil {
 		return false, err.Error()
