@@ -23,7 +23,7 @@ type Category struct {
 type Product struct {
 	ProdId          int     `json:"prodId"`
 	ProdTitle       string  `json:"prodTitle"`
-	ProdDescription string  `json:"prodescription"`
+	ProdDescription string  `json:"prodDescription"`
 	ProdCreatedAt   string  `json:"prodCreatedAt"`
 	ProdUpdated     string  `json:"prodUpdated"`
 	ProdPrice       float64 `json:"prodPrice,omitempty"`
