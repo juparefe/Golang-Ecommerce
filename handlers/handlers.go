@@ -62,6 +62,15 @@ func ValidateAuthorization(path string, method string, headers map[string]string
 }
 
 func ProcessUsers(body, path, method, user, id string, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessUsers with method: ", method)
+	switch method {
+	case "PUT":
+		return routers.UpdateUser(body, user, id)
+	case "DELETE":
+		return routers.DeleteUser(user, id)
+	case "GET":
+		return routers.SelectUsers(request)
+	}
 	return 400, "Method invalid"
 }
 
