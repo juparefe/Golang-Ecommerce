@@ -210,15 +210,17 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		var p models.Product
 		var ProdId sql.NullInt32
 		var ProdTitle, ProdDescription sql.NullString
-		var ProdCreatedAt, ProdUpdated *sql.NullTime
+		var ProdCreatedAt, ProdUpdated sql.NullTime
 		var ProdPrice sql.NullFloat64
 		var ProdPath sql.NullString
 		var ProdCategoryId, ProdStock sql.NullInt32
 
 		err := rows.Scan(&ProdId, &ProdTitle, &ProdDescription, &ProdCreatedAt, &ProdUpdated, &ProdPrice, &ProdPath, &ProdCategoryId, &ProdStock)
+		fmt.Println("Error en scan", err, ProdCreatedAt)
 		if err != nil {
 			return ProductRes, err
 		}
+
 		p.ProdId = int(ProdId.Int32)
 		p.ProdTitle = ProdTitle.String
 		p.ProdDescription = ProdDescription.String
