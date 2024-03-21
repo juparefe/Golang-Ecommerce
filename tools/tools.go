@@ -24,7 +24,7 @@ func CreateScript(s, fieldName, typeField, ValueS string, ValueN int, ValueF flo
 		(typeField == "N" && ValueN == 0) {
 		return s
 	}
-	if !strings.HasSuffix(s, "SET") {
+	if !strings.HasSuffix(s, "SET ") {
 		s += ", "
 	}
 
