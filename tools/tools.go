@@ -37,5 +37,6 @@ func CreateScript(s, fieldName, typeField, ValueS string, ValueN int, ValueF flo
 		s += fieldName + " = " + strconv.FormatFloat(ValueF, 'e', -1, 64)
 	}
 
+	fmt.Println("Script,", s)
 	return s
 }
