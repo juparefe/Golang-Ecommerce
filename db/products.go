@@ -50,7 +50,7 @@ func InsertProduct(p models.Product) (int64, error) {
 		script += "," + strconv.Itoa(p.ProdStock)
 	}
 	if len(p.ProdPath) > 0 {
-		script += "," + tools.EscapeString(p.ProdPath)
+		script += ",'" + tools.EscapeString(p.ProdPath) + "'"
 	}
 	script += ");"
 	fmt.Println("Script Insert: ", script)
