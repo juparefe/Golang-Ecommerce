@@ -112,6 +112,17 @@ func ProcessStock(body, path, method, user string, id int, request events.APIGat
 }
 
 func ProcessAddresses(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessAddresses with method: ", method)
+	switch method {
+	case "POST":
+		return routers.InsertAddress(body, user)
+	case "PUT":
+		return routers.UpdateAddress(body, user, id)
+	case "DELETE":
+		return routers.DeleteAdress(user, id)
+	case "GET":
+		return routers.SelectAdress(request)
+	}
 	return 400, "Method invalid"
 }
 

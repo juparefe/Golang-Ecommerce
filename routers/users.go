@@ -21,7 +21,7 @@ func UpdateUser(body, User string) (int, string) {
 	}
 
 	_, found := db.UserExists(User)
-	if found {
+	if !found {
 		return 400, "There is no user with that UUID '" + User + "'"
 	}
 
