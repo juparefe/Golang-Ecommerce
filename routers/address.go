@@ -53,13 +53,18 @@ func UpdateAddress(body, User string, id int) (int, string) {
 	}
 
 	t.AddId = id
-	err2, found := db.AddressExists(User, t.AddId)
+	var found bool
+	err, found = db.AddressExists(User, t.AddId)
 	if !found {
-		return 400, "There is no user with that UUID '" + User + "'"
+		if err != nil {
+			return 400, "Error searching address for user: '" + User + "': " + err.Error()
+		} else {
+			return 204, "There is no user with that UUID asociated to the address ID: '" + strconv.Itoa(id) + "'"
+		}
 	}
-	err2 := db.UpdateProduct(t)
-	if err2 != nil {
-		return 400, "Error when updating into the database: " + strconv.Itoa(id) + " > " + err2.Error()
+	err = db.UpdateAddress(t)
+	if err != nil {
+		return 400, "Error when updating into the database: " + strconv.Itoa(id) + " > " + err.Error()
 	}
 
 	return 200, "Update Ok"

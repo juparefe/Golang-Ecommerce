@@ -34,22 +34,49 @@ func InsertAddress(a models.Address, User string) error {
 	return nil
 }
 
-func UpdateAddress(p models.Product) error {
-	fmt.Println("Executing UpdateProduct in database")
+func AddressExists(User string, id int) (error, bool) {
+	fmt.Println("Executing AddressExists in database")
+	err := DbConnect()
+	if err != nil {
+		return err, false
+	}
+	defer Db.Close()
+
+	script := "SELECT 1 FROM addresses WHERE Add_Id='" + strconv.Itoa(id) + "AND Ad_UserId = '" + User + "';"
+	fmt.Println("Script Search Address: ", script)
+
+	rows, err := Db.Query(script)
+	if err != nil {
+		return err, false
+	}
+
+	var value string
+	rows.Next()
+	rows.Scan(&value)
+	fmt.Println("AddressExists > Succesfull execution: ", value)
+
+	if value == "1" {
+		return nil, true
+	}
+	return nil, false
+}
+
+func UpdateAddress(a models.Address) error {
+	fmt.Println("Executing UpdateAddress in database")
 	err := DbConnect()
 	if err != nil {
 		return err
 	}
 	defer Db.Close()
 
-	script := "UPDATE products SET "
-	script = tools.CreateScript(script, "Prod_Title", "S", p.ProdTitle, 0, 0)
-	script = tools.CreateScript(script, "Prod_Description", "S", p.ProdDescription, 0, 0)
-	script = tools.CreateScript(script, "Prod_Price", "F", "", 0, p.ProdPrice)
-	script = tools.CreateScript(script, "Prod_CategoryId", "N", "", p.ProdCategId, 0)
-	script = tools.CreateScript(script, "Prod_Stock", "N", "", p.ProdStock, 0)
-	script = tools.CreateScript(script, "Prod_Path", "S", p.ProdPath, 0, 0)
-	script += " WHERE Prod_Id = " + strconv.Itoa(p.ProdId) + ";"
+	script := "UPDATE addresses SET "
+	script = tools.CreateScript(script, "Add_Address", "S", a.AddAddress, 0, 0)
+	script = tools.CreateScript(script, "Add_City", "S", a.AddCity, 0, 0)
+	script = tools.CreateScript(script, "Add_Phone", "S", a.AddPhone, 0, 0)
+	script = tools.CreateScript(script, "Add_PostalCode", "S", a.AddPostalCode, 0, 0)
+	script = tools.CreateScript(script, "Add_State", "S", a.AddState, 0, 0)
+	script = tools.CreateScript(script, "Add_Title", "S", a.AddTitle, 0, 0)
+	script += " WHERE Add_Id = " + strconv.Itoa(a.AddId) + ";"
 	fmt.Println("Script Update: ", script)
 	_, err = Db.Exec(script)
 	if err != nil {
@@ -57,7 +84,7 @@ func UpdateAddress(p models.Product) error {
 		return err
 	}
 
-	fmt.Println("UpdateProduct > Succesfull execution")
+	fmt.Println("UpdateAddress > Succesfull execution")
 	return nil
 }
 
