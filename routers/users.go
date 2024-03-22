@@ -2,9 +2,8 @@ package routers
 
 import (
 	"encoding/json"
-	"strconv"
+	"fmt"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/juparefe/Golang-Ecommerce/db"
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
@@ -24,7 +23,7 @@ func UpdateUser(body, User string) (int, string) {
 		return 400, "There is no user with that UUID '" + User + "'"
 	}
 
-	err = db.UpdateUser(t)
+	err = db.UpdateUser(t, User)
 	if err != nil {
 		return 400, "Error when updating into the database: " + User + " > " + err.Error()
 	}
@@ -45,32 +44,21 @@ func DeleteUser(User, id string) (int, string) {
 	return 200, "Delete Ok"
 }
 
-func SelectUsers(request events.APIGatewayV2HTTPRequest) (int, string) {
-	var err error
-	var CategId int
-	var Slug string
-
-	requestCategId := request.QueryStringParameters["categId"]
-	requestSlug := request.QueryStringParameters["slug"]
-	if len(requestCategId) > 0 {
-		CategId, err = strconv.Atoi(requestCategId)
-		if err != nil {
-			return 500, "Error when converting the value to an integer: " + requestCategId
-		}
-	} else {
-		if len(requestSlug) > 0 {
-			Slug = requestSlug
-		}
+func SelectUsers(body, User string) (int, string) {
+	_, found := db.UserExists(User)
+	if found {
+		return 400, "There is no user with that UUID '" + User + "'"
 	}
 
-	list, err2 := db.SelectCategories(CategId, Slug)
+	row, err := db.SelectUsers(User)
+	fmt.Println("Row with user: ", row)
+	if err != nil {
+		return 400, "Error trying to get user/s: " + err.Error()
+	}
+
+	respJson, err2 := json.Marshal(500)
 	if err2 != nil {
-		return 400, "Error trying to get category/ies: " + err2.Error()
+		return 500, "Error trying to convert to JSON the user" + err2.Error()
 	}
-
-	Categ, err3 := json.Marshal(list)
-	if err3 != nil {
-		return 500, "Error trying to convert to JSON categories list" + err3.Error()
-	}
-	return 200, string(Categ)
+	return 200, string(respJson)
 }
