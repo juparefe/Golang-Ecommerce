@@ -9,24 +9,24 @@ import (
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
 
-func UpdateUser(body, User, id string) (int, string) {
-	var t models.Category
+func UpdateUser(body, User string) (int, string) {
+	var t models.User
 	err := json.Unmarshal([]byte(body), &t)
 	if err != nil {
 		return 400, "The request data is incorrect: " + err.Error()
 	}
-	if (len(t.CategName) == 0) && (len(t.CategPath) == 0) {
-		return 400, "You must specify the name and the path of the category to update"
+	if (len(t.UserFirstName) == 0) && (len(t.UserLastName) == 0) {
+		return 400, "You must specify the name (FirstName) or the lastName (LastName) of the user to update"
 	}
 
-	isAdmin, msg := db.UserIsAdmin(User)
-	if !isAdmin {
-		return 400, msg
+	_, found := db.UserExists(User)
+	if found {
+		return 400, "There is no user with that UUID '" + User + "'"
 	}
 
-	err2 := db.UpdateCategory(t)
-	if err2 != nil {
-		return 400, "Error when updating into the database: " + t.CategName + " > " + err2.Error()
+	err = db.UpdateUser(t)
+	if err != nil {
+		return 400, "Error when updating into the database: " + User + " > " + err.Error()
 	}
 
 	return 200, "Update Ok"
