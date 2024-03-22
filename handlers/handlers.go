@@ -21,7 +21,7 @@ func Handlers(path string, method string, body string, headers map[string]string
 	fmt.Println("Path to validate: ", path[0:5])
 	switch path[0:5] {
 	case "addre":
-		return ProcessAdresses(body, path, method, user, idn, request)
+		return ProcessAddresses(body, path, method, user, idn, request)
 	case "categ":
 		return ProcessCategories(body, path, method, user, idn, request)
 	case "order":
@@ -68,14 +68,11 @@ func ProcessUsers(body, path, method, user, id string, request events.APIGateway
 		case "PUT":
 			return routers.UpdateUser(body, user)
 		case "GET":
-			return routers.SelectUsers(body, user)
+			return routers.SelectUser(body, user)
 		}
 	}
-	switch method {
-	case "PUT":
-		return routers.UpdateUser(body, user)
-	case "DELETE":
-		return routers.DeleteUser(user, id)
+	if path == "users" && method == "GET" {
+		return routers.SelectUsers(body, user, request)
 	}
 	return 400, "Method invalid"
 }
@@ -114,7 +111,7 @@ func ProcessStock(body, path, method, user string, id int, request events.APIGat
 	return routers.UpdateStock(body, user, id)
 }
 
-func ProcessAdresses(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+func ProcessAddresses(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
 	return 400, "Method invalid"
 }
 

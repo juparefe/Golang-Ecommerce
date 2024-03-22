@@ -56,8 +56,8 @@ func DeleteUser(id int) error {
 	return nil
 }
 
-func SelectUsers(UserId string) (models.User, error) {
-	fmt.Println("Executing SelectUsers in database")
+func SelectUser(UserId string) (models.User, error) {
+	fmt.Println("Executing SelectUser in database")
 	User := models.User{}
 	err := DbConnect()
 	if err != nil {
@@ -71,7 +71,7 @@ func SelectUsers(UserId string) (models.User, error) {
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
-		fmt.Println("Error getting users:", err.Error())
+		fmt.Println("Error getting user:", err.Error())
 		return User, err
 	}
 	defer rows.Close()
@@ -84,6 +84,66 @@ func SelectUsers(UserId string) (models.User, error) {
 	User.UserFirstName = firstName.String
 	User.UserLastName = lastName.String
 	User.UserDateUpd = dateUpg.String
-	fmt.Println("SelectUsers > Succesfull execution")
+	fmt.Println("SelectUser > Succesfull execution")
 	return User, nil
+}
+
+func SelectUsers(Page int) (models.ListUsers, error) {
+	fmt.Println("Executing SelectUsers in database")
+	var lu models.ListUsers
+	User := []models.User{}
+	err := DbConnect()
+	if err != nil {
+		return lu, err
+	}
+	defer Db.Close()
+
+	var offSet int = (Page * 10) - 10
+	script := "SELECT * FROM users LIMIT 10"
+	scriptCount := "SELECT COUNT(*) as records FROM users;"
+	fmt.Println("Script Select count: ", scriptCount)
+
+	if offSet > 0 {
+		script += " OFFSET " + strconv.Itoa(offSet)
+	}
+	fmt.Println("Script Select: ", script)
+
+	var rowsCount *sql.Rows
+	rowsCount, err = Db.Query(scriptCount)
+	if err != nil {
+		fmt.Println("Error getting users count:", err.Error())
+		return lu, err
+	}
+	defer rowsCount.Close()
+
+	rowsCount.Next()
+	var records int
+
+	rowsCount.Scan(&records)
+
+	lu.TotalItems = records
+
+	var rows *sql.Rows
+	rows, err = Db.Query(script)
+	if err != nil {
+		fmt.Println("Error getting users:", err.Error())
+		return lu, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var u models.User
+		var firstName, lastName, dateUpg sql.NullString
+
+		rows.Scan(&u.UserUUID, &u.UserEmail, &firstName, &lastName, &u.UserStatus, &u.UserDateAdd, &dateUpg)
+
+		u.UserFirstName = firstName.String
+		u.UserLastName = lastName.String
+		u.UserDateUpd = dateUpg.String
+		User = append(User, u)
+	}
+	fmt.Println("SelectUsers > Succesfull execution")
+	lu.Data = User
+
+	return lu, nil
 }

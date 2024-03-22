@@ -152,7 +152,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	rows, err = Db.Query(scriptCount)
 	defer rows.Close()
 	if err != nil {
-		fmt.Println("Error getting products:", err.Error())
+		fmt.Println("Error getting products count:", err.Error())
 		return ProductRes, err
 	}
 	rows.Next()
