@@ -22,7 +22,7 @@ func UpdateUser(u models.User, User string) error {
 
 	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
 	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
-	script = tools.CreateScript(script, "User_DataUpg", "S", tools.DateMySQL(), 0, 0)
+	script = tools.CreateScript(script, "User_DateUpg", "S", tools.DateMySQL(), 0, 0)
 	script += " WHERE User_UUID = '" + User + "';"
 	fmt.Println("Script Update: ", script)
 
