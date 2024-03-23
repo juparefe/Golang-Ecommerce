@@ -36,26 +36,6 @@ func UpdateUser(u models.User, User string) error {
 	return nil
 }
 
-func DeleteUser(id int) error {
-	fmt.Println("Executing DeleteProduct in database")
-	err := DbConnect()
-	if err != nil {
-		return err
-	}
-	defer Db.Close()
-
-	script := "DELETE FROM products WHERE Prod_Id = " + strconv.Itoa(id)
-	fmt.Println("Script Delete: ", script)
-	_, err = Db.Exec(script)
-	if err != nil {
-		fmt.Println("Error:", err.Error())
-		return err
-	}
-
-	fmt.Println("DeleteProduct > Succesfull execution")
-	return nil
-}
-
 func SelectUser(UserId string) (models.User, error) {
 	fmt.Println("Executing SelectUser in database")
 	User := models.User{}

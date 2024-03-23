@@ -20,7 +20,7 @@ func InsertAddress(a models.Address, User string) error {
 	defer Db.Close()
 
 	script := "INSERT INTO addresses (Add_UserId, Add_Address, Add_City, Add_State, Add_PostalCode, Add_Phone, Add_Title, Add_Name)"
-	script += " VALUES ('" + User + "','" + User + "','" + a.AddAddress + "','" + a.AddCity + "','" + a.AddState + "','" + a.AddPostalCode + "','"
+	script += " VALUES ('" + User + "','" + a.AddAddress + "','" + a.AddCity + "','" + a.AddState + "','" + a.AddPostalCode + "','"
 	script += a.AddPhone + "','" + a.AddTitle + "','" + a.AddName + "');"
 	fmt.Println("Script Insert: ", script)
 
