@@ -18,7 +18,7 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return statusCode, user
 	}
 
-	fmt.Println("Path to validate: ", path[0:5])
+	fmt.Println("Path to validate: ", path[0:4])
 	switch path[0:4] {
 	case "addr":
 		return ProcessAddresses(body, path, method, user, idn, request)
