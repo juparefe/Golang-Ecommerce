@@ -42,7 +42,7 @@ func AddressExists(User string, id int) (error, bool) {
 	}
 	defer Db.Close()
 
-	script := "SELECT 1 FROM addresses WHERE Add_Id='" + strconv.Itoa(id) + "' AND Ad_UserId = '" + User + "';"
+	script := "SELECT 1 FROM addresses WHERE Add_Id='" + strconv.Itoa(id) + "' AND Add_UserId = '" + User + "';"
 	fmt.Println("Script Search Address: ", script)
 
 	rows, err := Db.Query(script)
