@@ -46,7 +46,7 @@ type User struct {
 	UserLastName  string `json:"userLastName"`
 	UserStatus    int    `json:"userStatus"`
 	UserDateAdd   string `json:"userDateAdd"`
-	UserDateUpd   string `json:"userDateUpd"`
+	UserDateUpg   string `json:"userDateUpg"`
 }
 
 type ListUsers struct {

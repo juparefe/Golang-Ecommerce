@@ -83,7 +83,7 @@ func SelectUser(UserId string) (models.User, error) {
 
 	User.UserFirstName = firstName.String
 	User.UserLastName = lastName.String
-	User.UserDateUpd = dateUpg.String
+	User.UserDateUpg = dateUpg.String
 	fmt.Println("SelectUser > Succesfull execution")
 	return User, nil
 }
@@ -139,7 +139,7 @@ func SelectUsers(Page int) (models.ListUsers, error) {
 
 		u.UserFirstName = firstName.String
 		u.UserLastName = lastName.String
-		u.UserDateUpd = dateUpg.String
+		u.UserDateUpg = dateUpg.String
 		User = append(User, u)
 	}
 	fmt.Println("SelectUsers > Succesfull execution")
