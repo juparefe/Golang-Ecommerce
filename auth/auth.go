@@ -30,11 +30,15 @@ func ValidateToken(token string) (bool, error, string) {
 	}
 
 	part1 := parts[1] + "="
-	fmt.Println("Part 1", part1+"=")
+	fmt.Println("Part 1", part1)
 	userInfo, err := base64.StdEncoding.DecodeString(part1)
 	if err != nil {
-		fmt.Println("The token cannot be decoded: ", err.Error())
-		return false, err, err.Error()
+		part1 = parts[1] + "="
+		userInfo, err = base64.StdEncoding.DecodeString(part1)
+		if err != nil {
+			fmt.Println("The token cannot be decoded: ", err.Error())
+			return false, err, err.Error()
+		}
 	}
 
 	var tkj TokenJSON
