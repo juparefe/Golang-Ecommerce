@@ -22,7 +22,7 @@ func UpdateUser(u models.User, User string) error {
 
 	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
 	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
-	script = tools.CreateScript(script, "User_DataUpg", "S", tools.DateMySQL(), 0, 0)
+	script = tools.CreateScript(script, "User_DateUpg", "S", tools.DateMySQL(), 0, 0)
 	script += " WHERE User_UUID = '" + User + "';"
 	fmt.Println("Script Update: ", script)
 
@@ -33,26 +33,6 @@ func UpdateUser(u models.User, User string) error {
 	}
 
 	fmt.Println("UpdateUser > Succesfull execution")
-	return nil
-}
-
-func DeleteUser(id int) error {
-	fmt.Println("Executing DeleteProduct in database")
-	err := DbConnect()
-	if err != nil {
-		return err
-	}
-	defer Db.Close()
-
-	script := "DELETE FROM products WHERE Prod_Id = " + strconv.Itoa(id)
-	fmt.Println("Script Delete: ", script)
-	_, err = Db.Exec(script)
-	if err != nil {
-		fmt.Println("Error:", err.Error())
-		return err
-	}
-
-	fmt.Println("DeleteProduct > Succesfull execution")
 	return nil
 }
 
@@ -83,7 +63,7 @@ func SelectUser(UserId string) (models.User, error) {
 
 	User.UserFirstName = firstName.String
 	User.UserLastName = lastName.String
-	User.UserDateUpd = dateUpg.String
+	User.UserDateUpg = dateUpg.String
 	fmt.Println("SelectUser > Succesfull execution")
 	return User, nil
 }
@@ -139,7 +119,7 @@ func SelectUsers(Page int) (models.ListUsers, error) {
 
 		u.UserFirstName = firstName.String
 		u.UserLastName = lastName.String
-		u.UserDateUpd = dateUpg.String
+		u.UserDateUpg = dateUpg.String
 		User = append(User, u)
 	}
 	fmt.Println("SelectUsers > Succesfull execution")

@@ -33,22 +33,9 @@ func UpdateUser(body, User string) (int, string) {
 	return 200, "Update Ok"
 }
 
-func DeleteUser(User, id string) (int, string) {
-	if id == "0" {
-		return 400, "The request data (ID) is incorrect"
-	}
-
-	isAdmin, msg := db.UserIsAdmin(User)
-	if !isAdmin {
-		return 400, msg
-	}
-
-	return 200, "Delete Ok"
-}
-
 func SelectUser(body, User string) (int, string) {
 	_, found := db.UserExists(User)
-	if found {
+	if !found {
 		return 400, "There is no user with that UUID '" + User + "'"
 	}
 

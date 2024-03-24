@@ -19,7 +19,7 @@ func InsertAddress(a models.Address, User string) error {
 	defer Db.Close()
 
 	script := "INSERT INTO addresses (Add_UserId, Add_Address, Add_City, Add_State, Add_PostalCode, Add_Phone, Add_Title, Add_Name)"
-	script += " VALUES ('" + User + "','" + User + "','" + a.AddAddress + "','" + a.AddCity + "','" + a.AddState + "','" + a.AddPostalCode + "','"
+	script += " VALUES ('" + User + "','" + a.AddAddress + "','" + a.AddCity + "','" + a.AddState + "','" + a.AddPostalCode + "','"
 	script += a.AddPhone + "','" + a.AddTitle + "','" + a.AddName + "');"
 	fmt.Println("Script Insert: ", script)
 
@@ -41,7 +41,7 @@ func AddressExists(User string, id int) (error, bool) {
 	}
 	defer Db.Close()
 
-	script := "SELECT 1 FROM addresses WHERE Add_Id='" + strconv.Itoa(id) + "AND Ad_UserId = '" + User + "';"
+	script := "SELECT 1 FROM addresses WHERE Add_Id='" + strconv.Itoa(id) + "' AND Add_UserId = '" + User + "';"
 	fmt.Println("Script Search Address: ", script)
 
 	rows, err := Db.Query(script)
