@@ -36,14 +36,13 @@ func InsertOrder(o models.Orders) (int64, error) {
 	for _, od := range o.OrderDetails {
 		script = "INSERT INTO orders_detail (OD_OrderId, OD_ProdId, OD_Quantity, OD_Price) VALUES (" + strconv.Itoa(int(LastInsertId)) + ","
 		script += strconv.Itoa(od.OD_ProdId) + "," + strconv.Itoa(od.OD_Quantity) + "," + strconv.FormatFloat(od.OD_Price, 'f', -1, 64) + ");"
+		fmt.Println("Script Insert Orders Detail: ", script)
+		_, err = Db.Exec(script)
+		if err != nil {
+			fmt.Println("Error inserting:", err.Error())
+			return 0, err
+		}
 	}
-	fmt.Println("Script Insert Orders Detail: ", script)
-	_, err = Db.Exec(script)
-	if err != nil {
-		fmt.Println("Error inserting:", err.Error())
-		return 0, err
-	}
-
 	fmt.Println("InsertOrder > Succesfull execution")
 	return LastInsertId, nil
 }
@@ -100,7 +99,7 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 		var o models.Orders
 		var OrderAddId sql.NullInt32
 
-		err = rows.Scan(&o.Order_Id, &o.Order_UserUUID, &OrderAddId, &o.Order_Date, &o.Order_Total)
+		err := rows.Scan(&o.Order_Id, &o.Order_UserUUID, &OrderAddId, &o.Order_Date, &o.Order_Total)
 		if err != nil {
 			return Orders, err
 		}
