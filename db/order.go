@@ -50,12 +50,7 @@ func InsertOrder(o models.Orders) (int64, error) {
 
 func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.Orders, error) {
 	fmt.Println("Executing SelectOrders in database")
-	Orders := []models.Orders{}
-	err := DbConnect()
-	if err != nil {
-		return Orders, err
-	}
-	defer Db.Close()
+	var Orders []models.Orders
 
 	script := "SELECT Order_Id, Order_UserUUID, Order_AddId, Order_Date, Order_Total FROM orders "
 	if orderId > 0 {
@@ -88,6 +83,11 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 	}
 
 	fmt.Println("Script Select: ", script)
+	err := DbConnect()
+	if err != nil {
+		return Orders, err
+	}
+	defer Db.Close()
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
@@ -99,18 +99,18 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 	for rows.Next() {
 		var o models.Orders
 		var OrderAddId sql.NullInt32
-		var OrderDate sql.NullString
 
-		err = rows.Scan(&o.Order_Id, &o.Order_UserUUID, &OrderAddId, &OrderDate, &o.Order_Total)
+		err = rows.Scan(&o.Order_Id, &o.Order_UserUUID, &OrderAddId, &o.Order_Date, &o.Order_Total)
 		if err != nil {
 			return Orders, err
 		}
 
 		o.Order_AddID = int(OrderAddId.Int32)
-		o.Order_Date = OrderDate.String
 
 		var rowsD *sql.Rows
 		scriptD := "SELECT OD_Id, OD_ProdId, OD_Quantity, OD_Price FROM orders_detail WHERE OD_OrderID = " + strconv.Itoa(o.Order_Id)
+		fmt.Println("Script Select Order details: ", scriptD)
+
 		rowsD, err = Db.Query(scriptD)
 		if err != nil {
 			return Orders, err
@@ -118,7 +118,7 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 		for rowsD.Next() {
 			var OD_Id, OD_ProdId, OD_Quantity int64
 			var OD_Price float64
-			err = rows.Scan(&OD_Id, &OD_ProdId, &OD_Quantity, &OD_Price)
+			err = rowsD.Scan(&OD_Id, &OD_ProdId, &OD_Quantity, &OD_Price)
 			if err != nil {
 				return Orders, err
 			}
