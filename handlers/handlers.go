@@ -132,7 +132,7 @@ func ProcessOrders(body, path, method, user string, id int, request events.APIGa
 	case "POST":
 		return routers.InsertOrder(body, user)
 	case "GET":
-		return routers.SelectOrder(user)
+		return routers.SelectOrder(user, request)
 	}
 	return 400, "Method invalid"
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/juparefe/Golang-Ecommerce/db"
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
@@ -51,15 +52,31 @@ func ValidOrder(o models.Orders) (bool, string) {
 	return true, ""
 }
 
-func SelectOrder(User string) (int, string) {
-	result, err := db.SelectAddress(User)
-	if err != nil {
-		return 400, "Error trying to get address for User: '" + User + "', Error: " + err.Error()
+func SelectOrder(user string, request events.APIGatewayV2HTTPRequest) (int, string) {
+	var startDate, endDate string
+	var orderId, page int
+
+	if len(request.QueryStringParameters["startDate"]) > 0 {
+		startDate = request.QueryStringParameters["startDate"]
+	}
+	if len(request.QueryStringParameters["endDate"]) > 0 {
+		startDate = request.QueryStringParameters["endDate"]
+	}
+	if len(request.QueryStringParameters["page"]) > 0 {
+		page, _ = strconv.Atoi(request.QueryStringParameters["page"])
+	}
+	if len(request.QueryStringParameters["orderId"]) > 0 {
+		orderId, _ = strconv.Atoi(request.QueryStringParameters["orderId"])
 	}
 
-	respJson, err := json.Marshal(result)
+	result, err := db.SelectOrders(user, startDate, endDate, orderId, page)
 	if err != nil {
-		return 500, "Error trying to convert to JSON adress list" + err.Error()
+		return 400, "Error trying to get orders for User: '" + user + "', from: '" + startDate + "' to: '" + endDate + "', Error: " + err.Error()
 	}
-	return 200, string(respJson)
+
+	Orders, err := json.Marshal(result)
+	if err != nil {
+		return 500, "Error trying to convert to JSON orders list" + err.Error()
+	}
+	return 200, string(Orders)
 }

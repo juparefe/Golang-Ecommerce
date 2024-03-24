@@ -48,45 +48,92 @@ func InsertOrder(o models.Orders) (int64, error) {
 	return LastInsertId, nil
 }
 
-func SelectOrder(User string) ([]models.Address, error) {
-	fmt.Println("Executing SelectAddress in database")
-	Addresses := []models.Address{}
+func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.Orders, error) {
+	fmt.Println("Executing SelectOrders in database")
+	Orders := []models.Orders{}
 	err := DbConnect()
 	if err != nil {
-		return Addresses, err
+		return Orders, err
 	}
 	defer Db.Close()
 
-	script := "SELECT Add_Id, Add_Address, Add_City, Add_Name, Add_Phone, Add_PostalCode, Add_State, Add_Title FROM addresses WHERE Add_UserId = '" + User + "';"
+	script := "SELECT Order_Id, Order_UserUUID, Order_AddId, Order_Date, Order_Total FROM orders "
+	if orderId > 0 {
+		script += " WHERE Order_Id = " + strconv.Itoa(orderId)
+	} else {
+		offset := 0
+		if page <= 0 {
+			page = 1
+		} else {
+			offset = (10 * (page - 1))
+		}
+		if len(startDate) == 10 {
+			startDate += " 23:59:59"
+		}
+		var where string
+		var whereUser string = " Order_UserUUID = '" + user + "'"
+		if len(startDate) > 0 && len(endDate) > 0 {
+			where += " WHERE Order_Date BETWEEN '" + startDate + "' AND '" + endDate
+		}
+		if len(where) > 0 {
+			where += " AND " + whereUser
+		} else {
+			where += " WHERE " + whereUser
+		}
+		limit := " LIMIT 10 "
+		if offset > 0 {
+			limit += " OFFSET " + strconv.Itoa(offset)
+		}
+		script += where + limit
+	}
+
 	fmt.Println("Script Select: ", script)
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
-		fmt.Println("Error getting addresses:", err.Error())
-		return Addresses, err
+		return Orders, err
 	}
-	for rows.Next() {
-		var a models.Address
-		var AddId sql.NullInt32
-		var AddAddress, AddCity, AddName, AddPhone, AddPostalCode, AddState, AddTitle sql.NullString
+	defer rows.Close()
 
-		err := rows.Scan(&AddId, &AddAddress, &AddCity, &AddName, &AddPhone, &AddPostalCode, &AddState, &AddTitle)
+	for rows.Next() {
+		var o models.Orders
+		var OrderAddId sql.NullInt32
+		var OrderDate sql.NullString
+
+		err = rows.Scan(&o.Order_Id, &o.Order_UserUUID, &OrderAddId, &OrderDate, &o.Order_Total)
 		if err != nil {
-			return Addresses, err
+			return Orders, err
 		}
 
-		a.AddId = int(AddId.Int32)
-		a.AddAddress = AddAddress.String
-		a.AddCity = AddCity.String
-		a.AddName = AddName.String
-		a.AddPhone = AddPhone.String
-		a.AddPostalCode = AddPostalCode.String
-		a.AddState = AddState.String
-		a.AddTitle = AddTitle.String
-		Addresses = append(Addresses, a)
+		o.Order_AddID = int(OrderAddId.Int32)
+		o.Order_Date = OrderDate.String
+
+		var rowsD *sql.Rows
+		scriptD := "SELECT OD_Id, OD_ProdId, OD_Quantity, OD_Price FROM orders_detail WHERE OD_OrderID = " + strconv.Itoa(o.Order_Id)
+		rowsD, err = Db.Query(scriptD)
+		if err != nil {
+			return Orders, err
+		}
+		for rowsD.Next() {
+			var OD_Id, OD_ProdId, OD_Quantity int64
+			var OD_Price float64
+			err = rows.Scan(&OD_Id, &OD_ProdId, &OD_Quantity, &OD_Price)
+			if err != nil {
+				return Orders, err
+			}
+
+			var od models.OrdersDetails
+			od.OD_Id = int(OD_Id)
+			od.OD_ProdId = int(OD_ProdId)
+			od.OD_Quantity = int(OD_Quantity)
+			od.OD_Price = OD_Price
+			o.OrderDetails = append(o.OrderDetails, od)
+		}
+		Orders = append(Orders, o)
+		rowsD.Close()
 	}
 
-	fmt.Println("SelectAddresses > Succesfull execution")
-	return Addresses, nil
+	fmt.Println("SelectOrders > Succesfull execution")
+	return Orders, nil
 }
