@@ -121,7 +121,7 @@ func ProcessAddresses(body, path, method, user string, id int, request events.AP
 	case "DELETE":
 		return routers.DeleteAdress(user, id)
 	case "GET":
-		return routers.SelectAdress(request)
+		return routers.SelectAdress(user)
 	}
 	return 400, "Method invalid"
 }

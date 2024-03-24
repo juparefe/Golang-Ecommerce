@@ -2,11 +2,8 @@ package routers
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
-	"strings"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/juparefe/Golang-Ecommerce/db"
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
@@ -75,12 +72,17 @@ func DeleteAdress(User string, id int) (int, string) {
 		return 400, "The request data (ID) is incorrect"
 	}
 
-	isAdmin, msg := db.UserIsAdmin(User)
-	if !isAdmin {
-		return 400, msg
+	var found bool
+	err, found := db.AddressExists(User, id)
+	if !found {
+		if err != nil {
+			return 400, "Error searching address for user: '" + User + "': " + err.Error()
+		} else {
+			return 204, "There is no user with that UUID asociated to the address ID: '" + strconv.Itoa(id) + "'"
+		}
 	}
 
-	err := db.DeleteProduct(id)
+	err = db.DeleteAddress(id)
 	if err != nil {
 		return 400, "Error when deleting into the database: " + strconv.Itoa(id) + " > " + err.Error()
 	}
@@ -88,51 +90,15 @@ func DeleteAdress(User string, id int) (int, string) {
 	return 200, "Delete Ok"
 }
 
-func SelectAdress(request events.APIGatewayV2HTTPRequest) (int, string) {
-	var t models.Product
-	var page, pageSize int
-	var orderType, orderField string
-
-	param := request.QueryStringParameters
-	page, _ = strconv.Atoi(param[`page`])
-	pageSize, _ = strconv.Atoi(param[`pageSize`])
-	orderType = param["orderType"]   // 'D' = Desc, 'A' or nil = Asc
-	orderField = param["orderField"] // 'C' = CategId, 'D' = Description, 'F' CreatedAt, 'I' = id, 'P' = Price, 'S' = Stock, 'T' = Title
-	if !strings.Contains("CDFIPST", orderField) {
-		orderField = ""
-	}
-
-	var choice string
-	if len(param["categId"]) > 0 {
-		choice = "C"
-		t.ProdCategId, _ = strconv.Atoi(param["categId"])
-	}
-	if len(param["slugCateg"]) > 0 {
-		choice = "K"
-		t.ProdCategPath = param["slugCateg"]
-	}
-	if len(param["prodId"]) > 0 {
-		choice = "P"
-		t.ProdId, _ = strconv.Atoi(param["prodId"])
-	}
-	if len(param["search"]) > 0 {
-		choice = "S"
-		t.ProdSearch = param["search"]
-	}
-	if len(param["slug"]) > 0 {
-		choice = "U"
-		t.ProdPath = param["slug"]
-	}
-
-	fmt.Println("Search parameters: ", param)
-	result, err := db.SelectProducts(t, choice, orderType, orderField, page, pageSize)
+func SelectAdress(User string) (int, string) {
+	result, err := db.SelectAddress(User)
 	if err != nil {
-		return 400, "Error trying to get product/s of Type: '" + choice + "', Error: " + err.Error()
+		return 400, "Error trying to get address for User: '" + User + "', Error: " + err.Error()
 	}
 
-	Product, err2 := json.Marshal(result)
-	if err2 != nil {
-		return 500, "Error trying to convert to JSON products list" + err2.Error()
+	respJson, err := json.Marshal(result)
+	if err != nil {
+		return 500, "Error trying to convert to JSON adress list" + err.Error()
 	}
-	return 200, string(Product)
+	return 200, string(respJson)
 }
