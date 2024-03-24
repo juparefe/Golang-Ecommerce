@@ -127,5 +127,12 @@ func ProcessAddresses(body, path, method, user string, id int, request events.AP
 }
 
 func ProcessOrders(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessOrders with method: ", method)
+	switch method {
+	case "POST":
+		return routers.InsertOrder(body, user)
+	case "GET":
+		return routers.SelectOrder(user)
+	}
 	return 400, "Method invalid"
 }
