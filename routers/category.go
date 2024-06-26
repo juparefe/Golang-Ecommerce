@@ -107,3 +107,18 @@ func SelectCategories(request events.APIGatewayV2HTTPRequest) (int, string) {
 	}
 	return 200, string(Categ)
 }
+
+func SelectTopCategories(request events.APIGatewayV2HTTPRequest) (int, string) {
+	var err error
+
+	list, err := db.SelectTopCategories()
+	if err != nil {
+		return 400, "Error trying to get top categories: " + err.Error()
+	}
+
+	Categ, err := json.Marshal(list)
+	if err != nil {
+		return 500, "Error trying to convert to JSON categories list" + err.Error()
+	}
+	return 200, string(Categ)
+}

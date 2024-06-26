@@ -30,6 +30,8 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return ProcessProducts(body, path, method, user, idn, request)
 	case "stoc":
 		return ProcessStock(body, path, method, user, idn, request)
+	case "topc":
+		return ProcessTopCategories(body, path, method, user, idn, request)
 	case "user":
 		return ProcessUsers(body, path, method, user, id, request)
 	}
@@ -103,6 +105,15 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 		return routers.DeleteCategory(user, id)
 	case "GET":
 		return routers.SelectCategories(request)
+	}
+	return 400, "Method invalid"
+}
+
+func ProcessTopCategories(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessTopCategories with method: ", method)
+	switch method {
+	case "GET":
+		return routers.SelectTopCategories(request)
 	}
 	return 400, "Method invalid"
 }

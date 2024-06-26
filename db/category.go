@@ -134,3 +134,49 @@ func SelectCategories(CategId int, Slug string) ([]models.Category, error) {
 	fmt.Println("SelectCategory > Succesfull execution")
 	return Categ, nil
 }
+
+func SelectTopCategories() ([]models.Category, error) {
+	fmt.Println("Executing SelectTopCategories in database")
+	var Categ []models.Category
+	err := DbConnect()
+	if err != nil {
+		return Categ, err
+	}
+	defer Db.Close()
+
+	script := `SELECT c.Categ_Id, c.Categ_Name, c.Categ_Path, COALESCE(SUM(od.OD_Quantity), 0) AS TotalSold
+				FROM category c
+				LEFT JOIN products p ON c.Categ_Id = p.Prod_CategoryId
+				LEFT JOIN orders_detail od ON p.Prod_Id = od.OD_ProdId
+				LEFT JOIN orders o ON od.OD_OrderId = o.Order_Id
+				GROUP BY c.Categ_Id, c.Categ_Name, c.Categ_Path
+				ORDER BY TotalSold DESC
+				LIMIT 5;`
+	fmt.Println("Script Select: ", script)
+
+	var rows *sql.Rows
+	rows, err = Db.Query(script)
+	if err != nil {
+		fmt.Println("Error getting top categories:", err.Error())
+		return Categ, err
+	}
+	for rows.Next() {
+		var c models.Category
+		var categId sql.NullInt32
+		var categName sql.NullString
+		var categPath sql.NullString
+
+		err = rows.Scan(&categId, &categName, &categPath)
+		if err != nil {
+			fmt.Println("Error adding row:", err.Error())
+			return Categ, err
+		}
+		c.CategId = int(categId.Int32)
+		c.CategName = categName.String
+		c.CategPath = categPath.String
+		Categ = append(Categ, c)
+	}
+
+	fmt.Println("SelectCategory > Succesfull execution")
+	return Categ, nil
+}
