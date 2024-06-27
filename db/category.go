@@ -151,7 +151,7 @@ func SelectTopCategories() ([]models.Category, error) {
 				LEFT JOIN orders o ON od.OD_OrderId = o.Order_Id
 				GROUP BY c.Categ_Id, c.Categ_Name, c.Categ_Path
 				ORDER BY TotalSold DESC
-				LIMIT 5;`
+				LIMIT 6;`
 	fmt.Println("Script Select: ", script)
 
 	var rows *sql.Rows
