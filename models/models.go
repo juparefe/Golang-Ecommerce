@@ -15,9 +15,10 @@ type SignUp struct {
 }
 
 type Category struct {
-	CategId   int    `json:"categId"`
-	CategName string `json:"categName"`
-	CategPath string `json:"categPath"`
+	CategId        int    `json:"categId"`
+	CategName      string `json:"categName"`
+	CategPath      string `json:"categPath"`
+	CategTotalSold int    `json:"categTotalSold"`
 }
 
 type Product struct {
