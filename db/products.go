@@ -229,8 +229,8 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		p.ProdPath = ProdPath.String
 		p.ProdCategId = int(ProdCategoryId.Int32)
 		p.ProdStock = int(ProdStock.Int32)
-		fmt.Println("p to append", p)
 		Prod = append(Prod, p)
+		fmt.Println(Prod)
 	}
 	ProductRes.TotalItems = records
 	ProductRes.Data = Prod
