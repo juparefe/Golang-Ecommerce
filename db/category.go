@@ -167,7 +167,7 @@ func SelectTopCategories() ([]models.Category, error) {
 		var categPath sql.NullString
 		var categTotalSold int
 
-		err = rows.Scan(&categId, &categName, &categPath, categTotalSold)
+		err = rows.Scan(&categId, &categName, &categPath, &categTotalSold)
 		if err != nil {
 			fmt.Println("Error adding row:", err.Error())
 			return Categ, err
