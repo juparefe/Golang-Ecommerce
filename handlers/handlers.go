@@ -39,7 +39,7 @@ func Handlers(path string, method string, body string, headers map[string]string
 }
 
 func ValidateAuthorization(path string, method string, headers map[string]string) (bool, int, string) {
-	if (path == "product" || path == "category") && method == "GET" {
+	if (path == "category" || path == "product" || path == "topcategories") && method == "GET" {
 		return true, 200, ""
 	}
 
