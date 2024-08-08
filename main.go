@@ -39,7 +39,6 @@ func ExecuteLambda(context context.Context, request events.APIGatewayV2HTTPReque
 	if err != nil {
 		fmt.Println("Error reading secret: ", err.Error())
 		return res, err
-
 	}
 
 	//Llamar handlers

@@ -33,6 +33,34 @@ func UpdateUser(body, User string) (int, string) {
 	return 200, "Update Ok"
 }
 
+func UpdateUserRole(body, User string) (int, string) {
+	var t models.User
+	err := json.Unmarshal([]byte(body), &t)
+	if err != nil {
+		return 400, "The request data is incorrect: " + err.Error()
+	}
+	if (len(t.UserFirstName) == 0) && (len(t.UserLastName) == 0) {
+		return 400, "You must specify the name (FirstName) or the lastName (LastName) of the user to update"
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	_, found := db.UserExists(User)
+	if !found {
+		return 400, "There is no user with that UUID '" + User + "'"
+	}
+
+	err = db.UpdateUser(t, User)
+	if err != nil {
+		return 400, "Error when updating into the database: " + User + " > " + err.Error()
+	}
+
+	return 200, "Update Ok"
+}
+
 func SelectUser(body, User string) (int, string) {
 	_, found := db.UserExists(User)
 	if !found {

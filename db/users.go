@@ -36,6 +36,32 @@ func UpdateUser(u models.User, User string) error {
 	return nil
 }
 
+func UpdateUserRole(u models.User, User string) error {
+	fmt.Println("Executing UpdateUser in database")
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	script := "UPDATE users SET "
+
+	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
+	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
+	script = tools.CreateScript(script, "User_DateUpg", "S", tools.DateMySQL(), 0, 0)
+	script += " WHERE User_UUID = '" + User + "';"
+	fmt.Println("Script Update: ", script)
+
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Error Updating:", err.Error())
+		return err
+	}
+
+	fmt.Println("UpdateUser > Succesfull execution")
+	return nil
+}
+
 func SelectUser(UserId string) (models.User, error) {
 	fmt.Println("Executing SelectUser in database")
 	User := models.User{}

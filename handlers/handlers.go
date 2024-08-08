@@ -24,6 +24,8 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return ProcessAddresses(body, path, method, user, idn, request)
 	case "cate":
 		return ProcessCategories(body, path, method, user, idn, request)
+	case "curr":
+		return ProcessCurrencies(path, method, user, idn, request)
 	case "orde":
 		return ProcessOrders(body, path, method, user, idn, request)
 	case "prod":
@@ -63,33 +65,17 @@ func ValidateAuthorization(path string, method string, headers map[string]string
 	return true, 200, msg
 }
 
-func ProcessUsers(body, path, method, user, id string, request events.APIGatewayV2HTTPRequest) (int, string) {
-	fmt.Println("Start ProcessUsers with method: ", method)
-	if path == "user/me" {
-		switch method {
-		case "PUT":
-			return routers.UpdateUser(body, user)
-		case "GET":
-			return routers.SelectUser(body, user)
-		}
-	}
-	if path == "users" && method == "GET" {
-		return routers.SelectUsers(body, user, request)
-	}
-	return 400, "Method invalid"
-}
-
-func ProcessProducts(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
-	fmt.Println("Start ProcessProducts with method: ", method)
+func ProcessAddresses(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessAddresses with method: ", method)
 	switch method {
 	case "POST":
-		return routers.InsertProduct(body, user)
+		return routers.InsertAddress(body, user)
 	case "PUT":
-		return routers.UpdateProduct(body, user, id)
+		return routers.UpdateAddress(body, user, id)
 	case "DELETE":
-		return routers.DeleteProduct(user, id)
+		return routers.DeleteAdress(user, id)
 	case "GET":
-		return routers.SelectProducts(request)
+		return routers.SelectAdress(user)
 	}
 	return 400, "Method invalid"
 }
@@ -109,32 +95,8 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 	return 400, "Method invalid"
 }
 
-func ProcessTopCategories(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
-	fmt.Println("Start ProcessTopCategories with method: ", method)
-	switch method {
-	case "GET":
-		return routers.SelectTopCategories(request)
-	}
-	return 400, "Method invalid"
-}
-
-func ProcessStock(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
-	return routers.UpdateStock(body, user, id)
-}
-
-func ProcessAddresses(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
-	fmt.Println("Start ProcessAddresses with method: ", method)
-	switch method {
-	case "POST":
-		return routers.InsertAddress(body, user)
-	case "PUT":
-		return routers.UpdateAddress(body, user, id)
-	case "DELETE":
-		return routers.DeleteAdress(user, id)
-	case "GET":
-		return routers.SelectAdress(user)
-	}
-	return 400, "Method invalid"
+func ProcessCurrencies(path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	return routers.SelectCurrencies(request)
 }
 
 func ProcessOrders(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
@@ -144,6 +106,50 @@ func ProcessOrders(body, path, method, user string, id int, request events.APIGa
 		return routers.InsertOrder(body, user)
 	case "GET":
 		return routers.SelectOrder(user, request)
+	}
+	return 400, "Method invalid"
+}
+
+func ProcessProducts(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessProducts with method: ", method)
+	switch method {
+	case "POST":
+		return routers.InsertProduct(body, user)
+	case "PUT":
+		return routers.UpdateProduct(body, user, id)
+	case "DELETE":
+		return routers.DeleteProduct(user, id)
+	case "GET":
+		return routers.SelectProducts(request)
+	}
+	return 400, "Method invalid"
+}
+
+func ProcessStock(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	return routers.UpdateStock(body, user, id)
+}
+
+func ProcessTopCategories(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessTopCategories with method: ", method)
+	switch method {
+	case "GET":
+		return routers.SelectTopCategories(request)
+	}
+	return 400, "Method invalid"
+}
+
+func ProcessUsers(body, path, method, user, id string, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessUsers with method: ", method)
+	if path == "user/me" {
+		switch method {
+		case "PUT":
+			return routers.UpdateUser(body, user)
+		case "GET":
+			return routers.SelectUser(body, user)
+		}
+	}
+	if path == "users" && method == "GET" {
+		return routers.SelectUsers(body, user, request)
 	}
 	return 400, "Method invalid"
 }
