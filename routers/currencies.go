@@ -10,36 +10,37 @@ import (
 
 func SelectCurrencies(request events.APIGatewayV2HTTPRequest) (int, string) {
 	var err error
-	var Currency string
+	var BaseCurrency string
+	var TargetCurrency string
 
-	requestCurrency := request.QueryStringParameters["currency"]
-	if len(requestCurrency) > 0 {
-		Currency = requestCurrency
+	requestBaseCurrency := request.QueryStringParameters["base_currency"]
+	requestTargetCurrency := request.QueryStringParameters["target_currency"]
+	if len(requestBaseCurrency) > 0 {
+		BaseCurrency = requestBaseCurrency
+	} else {
+		if len(requestTargetCurrency) > 0 {
+			TargetCurrency = requestTargetCurrency
+		}
 	}
 
-	// Obtener la fecha de la última actualización de la base de datos
-	lastUpdated, err := db.GetLastCurrenciesUpdateDate()
+	// Obtener los tipos de cambio para el par de la base de datos
+	currency, err := db.SelectCurrency(BaseCurrency, TargetCurrency)
 	if err != nil {
-		return 400, "Error trying to get the last update date: " + err.Error()
+		return 400, "Error trying to get currency rate: " + err.Error()
 	}
 
 	// Verificar si se necesita actualizar los tipos de cambio
-	if lastUpdated.IsZero() || lastUpdated.Before(time.Now().Add(-24*time.Hour)) {
+	if currency.LastUpdated.IsZero() || currency.LastUpdated.Before(time.Now().Add(-24*time.Hour)) {
 		// Actualizar tasas de cambio
-		err = db.UpdateRatesFromAPI()
+		currency, err = db.UpdateRatesFromAPI(BaseCurrency, TargetCurrency)
 		if err != nil {
 			return 400, "Error updating rates from ExchangeRateAPI: " + err.Error()
 		}
 	}
 
-	list, err := db.SelectCurrencies(Currency)
-	if err != nil {
-		return 400, "Error trying to get currencies: " + err.Error()
-	}
-
-	Currencies, err2 := json.Marshal(list)
+	Currency, err2 := json.Marshal(currency)
 	if err2 != nil {
-		return 500, "Error trying to convert to JSON currencies list" + err2.Error()
+		return 500, "Error trying to convert to JSON currency object" + err2.Error()
 	}
-	return 200, string(Currencies)
+	return 200, string(Currency)
 }

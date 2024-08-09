@@ -7,15 +7,40 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/juparefe/Golang-Ecommerce/models"
 )
 
-func GetLastUpdateDate() (time.Time, error) {
-	var lastUpdated time.Time
-	err := Db.QueryRow("SELECT last_updated FROM exchange_rates ORDER BY last_updated DESC LIMIT 1").Scan(&lastUpdated)
-	if err != nil && err != sql.ErrNoRows {
-		return time.Time{}, err
+func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error) {
+	fmt.Println("Executing SelectCurrency in database")
+	var Currency models.Currency
+	err := DbConnect()
+	if err != nil {
+		return Currency, err
 	}
-	return lastUpdated, nil
+	defer Db.Close()
+
+	script := "SELECT * FROM currencies WHERE base_currency = '" + BaseCurrency + "' AND target_currency = '" + TargetCurrency + "';"
+	fmt.Println("Script Select: ", script)
+
+	var row *sql.Row
+	row = Db.QueryRow(script)
+	var baseCurrency, targetCurrency sql.NullString
+	var currencyRate sql.NullFloat64
+	var lastUpdated time.Time
+
+	err = row.Scan(&baseCurrency, &currencyRate, &lastUpdated, &targetCurrency)
+	if err != nil {
+		fmt.Println("Error scanning row:", err.Error())
+		return Currency, err
+	}
+	Currency.BaseCurrency = baseCurrency.String
+	Currency.CurrencyRate = currencyRate.Float64
+	Currency.LastUpdated = lastUpdated
+	Currency.TargetCurrency = targetCurrency.String
+
+	fmt.Println("SelectCurrency > Successfull execution")
+	return Currency, nil
 }
 
 func UpdateRatesFromAPI() error {
@@ -35,7 +60,7 @@ func UpdateRatesFromAPI() error {
 		return fmt.Errorf("error unmarshalling response: %v", err)
 	}
 
-	tx, err := db.Begin()
+	tx, err := Db.Begin()
 	if err != nil {
 		return fmt.Errorf("error starting transaction: %v", err)
 	}

@@ -67,7 +67,7 @@ func InsertProduct(p models.Product) (int64, error) {
 		return 0, err2
 	}
 
-	fmt.Println("InsertProduct > Succesfull execution: ", LastInsertId)
+	fmt.Println("InsertProduct > Successfull execution: ", LastInsertId)
 	return LastInsertId, nil
 }
 
@@ -94,7 +94,7 @@ func UpdateProduct(p models.Product) error {
 		return err
 	}
 
-	fmt.Println("UpdateProduct > Succesfull execution")
+	fmt.Println("UpdateProduct > Successfull execution")
 	return nil
 }
 
@@ -114,7 +114,7 @@ func DeleteProduct(id int) error {
 		return err
 	}
 
-	fmt.Println("DeleteProduct > Succesfull execution")
+	fmt.Println("DeleteProduct > Successfull execution")
 	return nil
 }
 
@@ -234,7 +234,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	}
 	ProductRes.TotalItems = records
 	ProductRes.Data = Prod
-	fmt.Println("SelectProducts > Succesfull execution")
+	fmt.Println("SelectProducts > Successfull execution")
 	return ProductRes, nil
 }
 
@@ -257,6 +257,6 @@ func UpdateStock(p models.Product) error {
 		return err
 	}
 
-	fmt.Println("UpdateStock > Succesfull execution")
+	fmt.Println("UpdateStock > Successfull execution")
 	return nil
 }

@@ -43,7 +43,7 @@ func InsertOrder(o models.Orders) (int64, error) {
 			return 0, err
 		}
 	}
-	fmt.Println("InsertOrder > Succesfull execution")
+	fmt.Println("InsertOrder > Successfull execution")
 	return LastInsertId, nil
 }
 
@@ -133,6 +133,6 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 		rowsD.Close()
 	}
 
-	fmt.Println("SelectOrders > Succesfull execution")
+	fmt.Println("SelectOrders > Successfull execution")
 	return Orders, nil
 }
