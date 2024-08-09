@@ -96,6 +96,7 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 }
 
 func ProcessCurrencies(path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	fmt.Println("Start ProcessCurrencies with method: ", method)
 	return routers.SelectCurrencies(request)
 }
 
