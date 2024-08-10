@@ -31,7 +31,6 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	err = row.Scan(&baseCurrency, &currencyRate, &lastUpdated, &targetCurrency)
 	if err != nil {
 		fmt.Println("Error scanning row with base_currency = '" + BaseCurrency + "' and target_currency = '" + TargetCurrency + ", " + err.Error())
-		UpdateRatesFromAPI(BaseCurrency, TargetCurrency)
 		return Currency, err
 	}
 	Currency.BaseCurrency = baseCurrency.String
