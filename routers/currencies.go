@@ -15,12 +15,11 @@ func SelectCurrencies(request events.APIGatewayV2HTTPRequest) (int, string) {
 
 	requestBaseCurrency := request.QueryStringParameters["base_currency"]
 	requestTargetCurrency := request.QueryStringParameters["target_currency"]
-	if len(requestBaseCurrency) > 0 {
+	if len(requestBaseCurrency) > 0 && len(requestTargetCurrency) > 0 {
 		BaseCurrency = requestBaseCurrency
+		TargetCurrency = requestTargetCurrency
 	} else {
-		if len(requestTargetCurrency) > 0 {
-			TargetCurrency = requestTargetCurrency
-		}
+		return 400, "The request data is incorrect: base_currency: " + requestBaseCurrency + ", target_currency: " + requestTargetCurrency
 	}
 
 	// Obtener los tipos de cambio para el par de la base de datos
