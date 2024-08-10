@@ -30,7 +30,7 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 
 	err = row.Scan(&baseCurrency, &currencyRate, &lastUpdated, &targetCurrency)
 	if err != nil {
-		fmt.Println("Error scanning row with base_currency = '" + BaseCurrency + "' AND target_currency = '" + TargetCurrency + ", " + err.Error())
+		fmt.Println("Error scanning row with base_currency = '" + BaseCurrency + "' and target_currency = '" + TargetCurrency + ", " + err.Error())
 		UpdateRatesFromAPI(BaseCurrency, TargetCurrency)
 		return Currency, err
 	}
@@ -46,6 +46,7 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 func UpdateRatesFromAPI(BaseCurrency, TargetCurrency string) (models.Currency, error) {
 	apiKey := os.Getenv("UrlPrefix")
 	apiUrl := "https://v6.exchangerate-api.com/v6/" + apiKey + "/latest/" + BaseCurrency
+	fmt.Println("Executing UpdateRatesFromAPI with url: ", apiUrl)
 
 	resp, err := http.Get(apiUrl)
 	fmt.Println("Respuesta obtenida:", resp)
