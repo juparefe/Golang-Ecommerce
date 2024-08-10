@@ -44,7 +44,7 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 }
 
 func UpdateRatesFromAPI(BaseCurrency, TargetCurrency string) (models.Currency, error) {
-	apiKey := os.Getenv("UrlPrefix")
+	apiKey := os.Getenv("ApiKeyExchangeRate")
 	apiUrl := "https://v6.exchangerate-api.com/v6/" + apiKey + "/latest/" + BaseCurrency
 	fmt.Println("Executing UpdateRatesFromAPI with url: ", apiUrl)
 
