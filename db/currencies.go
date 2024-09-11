@@ -58,12 +58,7 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 
 		// Verificar si la fila ya existe en la base de datos
 		var exists bool
-		checkQuery := `
-			SELECT EXISTS (
-				SELECT 1 FROM exchange_rates 
-				WHERE base_currency = ? AND target_currency = ?
-			)
-		`
+		checkQuery := `SELECT EXISTS (SELECT 1 FROM exchange_rates WHERE base_currency = ? AND target_currency = ?)`
 		fmt.Println("Script check currencies: ", checkQuery)
 		err := Db.QueryRow(checkQuery, baseCurrency, targetCurrency).Scan(&exists)
 		if err != nil {
@@ -72,11 +67,7 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 
 		if exists {
 			// Si la fila existe, actualizar la tasa de cambio y la fecha de actualización
-			updateQuery := `
-				UPDATE exchange_rates
-				SET rate = ?, last_updated = ?
-				WHERE base_currency = ? AND target_currency = ?
-			`
+			updateQuery := `UPDATE exchange_rates SET rate = ?, last_updated = ? WHERE base_currency = ? AND target_currency = ?`
 			fmt.Println("Script update currencies: ", updateQuery)
 			_, err = Db.Exec(updateQuery, rate, timeLastUpdate, baseCurrency, targetCurrency)
 			if err != nil {
