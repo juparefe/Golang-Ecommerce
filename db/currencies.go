@@ -18,7 +18,7 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	}
 	defer Db.Close()
 
-	script := "SELECT * FROM currencies WHERE base_currency = '" + BaseCurrency + "' AND target_currency = '" + TargetCurrency + "';"
+	script := "SELECT * FROM exchange_rates WHERE base_currency = '" + BaseCurrency + "' AND target_currency = '" + TargetCurrency + "';"
 	fmt.Println("Script Select: ", script)
 
 	var row *sql.Row
