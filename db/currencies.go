@@ -51,10 +51,12 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 	// Preparar el statement para actualizar la tabla
 	stmt, err := Db.Prepare("UPDATE exchange_rates SET rate = ?, last_updated = ? WHERE base_currency = 'COP' AND target_currency = ?")
 	if err != nil {
+		fmt.Println("Error prepare", err)
 		return err
 	}
 	defer stmt.Close()
 
+	fmt.Println("Stmt", stmt)
 	// Actualizar la tasa para COP -> COP
 	_, err = stmt.Exec(currencies["cop"], timeLastUpdate, "COP")
 	if err != nil {
