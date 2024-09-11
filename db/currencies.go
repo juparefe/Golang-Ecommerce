@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
@@ -25,7 +24,7 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	row = Db.QueryRow(script)
 	var baseCurrency, targetCurrency sql.NullString
 	var currencyRate sql.NullFloat64
-	var lastUpdated time.Time
+	var lastUpdated sql.NullTime
 
 	err = row.Scan(&baseCurrency, &targetCurrency, &currencyRate, &lastUpdated)
 	if err != nil {
@@ -35,7 +34,10 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	Currency.BaseCurrency = baseCurrency.String
 	Currency.TargetCurrency = targetCurrency.String
 	Currency.CurrencyRate = currencyRate.Float64
-	Currency.LastUpdated = lastUpdated
+	// Verificar si lastUpdated es válido antes de asignarlo
+	if lastUpdated.Valid {
+		Currency.LastUpdated = lastUpdated.Time
+	}
 
 	fmt.Println("SelectCurrency > Successfull execution")
 	return Currency, nil
