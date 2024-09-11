@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 type SecretRDSJson struct {
 	DbClusterIdentifier string `json:"dbClusterIdentifier"`
 	Engine              string `json:"engine"`
@@ -35,10 +33,10 @@ type Category struct {
 }
 
 type Currency struct {
-	BaseCurrency   string    `json:"base_currency"`
-	CurrencyRate   float64   `json:"rate"`
-	LastUpdated    time.Time `json:"last_updated"`
-	TargetCurrency string    `json:"target_currency"`
+	BaseCurrency   string  `json:"base_currency"`
+	CurrencyRate   float64 `json:"rate"`
+	LastUpdated    string  `json:"last_updated"`
+	TargetCurrency string  `json:"target_currency"`
 }
 
 type ListUsers struct {

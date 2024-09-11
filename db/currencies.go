@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
@@ -25,29 +24,17 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	row = Db.QueryRow(script)
 	var baseCurrency, targetCurrency sql.NullString
 	var currencyRate sql.NullFloat64
-	var lastUpdatedString sql.NullString
+	var lastUpdated sql.NullString
 
-	err = row.Scan(&baseCurrency, &targetCurrency, &currencyRate, &lastUpdatedString)
+	err = row.Scan(&baseCurrency, &targetCurrency, &currencyRate, &lastUpdated)
 	if err != nil {
 		fmt.Println("Error scanning row with base_currency = '" + BaseCurrency + "' and target_currency = '" + TargetCurrency + ", " + err.Error())
 		return Currency, err
 	}
-
-	// Convertir el valor de lastUpdatedString a time.Time
-	var lastUpdated time.Time
-	if lastUpdatedString.Valid {
-		parsedTime, err := time.Parse("2006-01-02 15:04:05", lastUpdatedString.String)
-		if err != nil {
-			fmt.Println("Error parsing last_updated time: ", err.Error())
-			return Currency, err
-		}
-		lastUpdated = parsedTime
-	}
-
 	Currency.BaseCurrency = baseCurrency.String
 	Currency.TargetCurrency = targetCurrency.String
 	Currency.CurrencyRate = currencyRate.Float64
-	Currency.LastUpdated = lastUpdated
+	Currency.LastUpdated = lastUpdated.String
 
 	fmt.Println("SelectCurrency > Successfull execution")
 	return Currency, nil
