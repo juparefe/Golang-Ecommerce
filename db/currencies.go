@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/juparefe/Golang-Ecommerce/models"
@@ -52,6 +53,9 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 	baseCurrency := "COP"
 
 	for targetCurrency, rate := range currencies {
+		// Convertir targetCurrency a mayúsculas
+		targetCurrency = strings.ToUpper(targetCurrency)
+
 		// Verificar si la fila ya existe en la base de datos
 		var exists bool
 		checkQuery := `
