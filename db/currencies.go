@@ -48,33 +48,46 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 	}
 	defer Db.Close()
 
-	// Preparar el statement para actualizar la tabla
-	stmt, err := Db.Prepare("UPDATE exchange_rates SET rate = ?, last_updated = ? WHERE base_currency = 'COP' AND target_currency = ?")
-	if err != nil {
-		fmt.Println("Error prepare", err)
-		return err
-	}
-	defer stmt.Close()
+	// Base currency será siempre "COP"
+	baseCurrency := "COP"
 
-	fmt.Println("Stmt", stmt)
-	// Actualizar la tasa para COP -> COP
-	_, err = stmt.Exec(currencies["cop"], timeLastUpdate, "COP")
-	if err != nil {
-		return err
-	}
+	for targetCurrency, rate := range currencies {
+		// Verificar si la fila ya existe en la base de datos
+		var exists bool
+		checkQuery := `
+			SELECT EXISTS (
+				SELECT 1 FROM exchange_rates 
+				WHERE base_currency = ? AND target_currency = ?
+			)
+		`
+		err := Db.QueryRow(checkQuery, baseCurrency, targetCurrency).Scan(&exists)
+		if err != nil {
+			return fmt.Errorf("error checking if row exists: %v", err)
+		}
 
-	// Actualizar la tasa para COP -> USD
-	_, err = stmt.Exec(currencies["usd"], timeLastUpdate, "USD")
-	if err != nil {
-		return err
+		if exists {
+			// Si la fila existe, actualizar la tasa de cambio y la fecha de actualización
+			updateQuery := `
+				UPDATE exchange_rates
+				SET rate = ?, last_updated = ?
+				WHERE base_currency = ? AND target_currency = ?
+			`
+			_, err = Db.Exec(updateQuery, rate, timeLastUpdate, baseCurrency, targetCurrency)
+			if err != nil {
+				return fmt.Errorf("error updating row: %v", err)
+			}
+		} else {
+			// Si la fila no existe, insertar una nueva fila
+			insertQuery := `
+				INSERT INTO exchange_rates (base_currency, target_currency, rate, last_updated)
+				VALUES (?, ?, ?, ?)
+			`
+			_, err = Db.Exec(insertQuery, baseCurrency, targetCurrency, rate, timeLastUpdate)
+			if err != nil {
+				return fmt.Errorf("error inserting new row: %v", err)
+			}
+		}
 	}
-
-	// Actualizar la tasa para COP -> EUR
-	_, err = stmt.Exec(currencies["eur"], timeLastUpdate, "EUR")
-	if err != nil {
-		return err
-	}
-
 	fmt.Println("UpdateCurrencies > Successful execution")
 	return nil
 }
