@@ -67,7 +67,7 @@ func UpdateCurrencies(currencies map[string]float64) error {
 
 		if exists {
 			// Si la fila existe, actualizar la tasa de cambio y la fecha de actualización
-			updateQuery := `UPDATE exchange_rates SET rate = ?, WHERE base_currency = ? AND target_currency = ?`
+			updateQuery := `UPDATE exchange_rates SET rate = ? WHERE base_currency = ? AND target_currency = ?`
 			fmt.Println("Script update currencies: ", updateQuery)
 			_, err = Db.Exec(updateQuery, rate, baseCurrency, targetCurrency)
 			if err != nil {
