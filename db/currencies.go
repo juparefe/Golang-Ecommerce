@@ -3,8 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
-	"os"
 	"time"
 
 	"github.com/juparefe/Golang-Ecommerce/models"
@@ -42,48 +40,39 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	return Currency, nil
 }
 
-func UpdateRatesFromAPI(BaseCurrency, TargetCurrency string) (models.Currency, error) {
-	apiKey := os.Getenv("ApiKeyExchangeRate")
-	apiUrl := "https://v6.exchangerate-api.com/v6/" + apiKey + "/latest/" + BaseCurrency
-	fmt.Println("Executing UpdateRatesFromAPI with url: ", apiUrl)
-
-	resp, err := http.Get(apiUrl)
-	fmt.Println("Respuesta obtenida:", resp)
+func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) error {
+	fmt.Println("Executing UpdateCurrencies in database")
+	err := DbConnect()
 	if err != nil {
-		fmt.Println("Error fetching data from API: ", err.Error())
-		return models.Currency{}, err
+		return err
 	}
-	defer resp.Body.Close()
+	defer Db.Close()
 
-	// body, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return fmt.Errorf("error reading response: %v", err)
-	// }
+	// Preparar el statement para actualizar la tabla
+	stmt, err := Db.Prepare("UPDATE exchange_rates SET rate = ?, last_updated = ? WHERE base_currency = 'COP' AND target_currency = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
 
-	// var rates ExchangeRates
-	// if err := json.Unmarshal(body, &rates); err != nil {
-	// 	return fmt.Errorf("error unmarshalling response: %v", err)
-	// }
+	// Actualizar la tasa para COP -> COP
+	_, err = stmt.Exec(currencies["cop"], timeLastUpdate, "COP")
+	if err != nil {
+		return err
+	}
 
-	// tx, err := Db.Begin()
-	// if err != nil {
-	// 	return fmt.Errorf("error starting transaction: %v", err)
-	// }
+	// Actualizar la tasa para COP -> USD
+	_, err = stmt.Exec(currencies["usd"], timeLastUpdate, "USD")
+	if err != nil {
+		return err
+	}
 
-	// _, err = tx.Exec("DELETE FROM exchange_rates")
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	return fmt.Errorf("error clearing exchange rates: %v", err)
-	// }
+	// Actualizar la tasa para COP -> EUR
+	_, err = stmt.Exec(currencies["eur"], timeLastUpdate, "EUR")
+	if err != nil {
+		return err
+	}
 
-	// for currency, rate := range rates.Rates {
-	// 	_, err := tx.Exec("REPLACE INTO exchange_rates (currency, rate, last_updated) VALUES (?, ?, ?)", currency, rate, time.Now())
-	// 	if err != nil {
-	// 		tx.Rollback()
-	// 		return fmt.Errorf("error updating database: %v", err)
-	// 	}
-	// }
-
-	// return tx.Commit()
-	return models.Currency{}, nil
+	fmt.Println("UpdateCurrencies > Successful execution")
+	return nil
 }

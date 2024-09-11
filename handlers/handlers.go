@@ -25,7 +25,7 @@ func Handlers(path string, method string, body string, headers map[string]string
 	case "cate":
 		return ProcessCategories(body, path, method, user, idn, request)
 	case "curr":
-		return ProcessCurrencies(path, method, user, idn, request)
+		return ProcessCurrencies(body, path, method, user, idn, request)
 	case "orde":
 		return ProcessOrders(body, path, method, user, idn, request)
 	case "prod":
@@ -95,9 +95,15 @@ func ProcessCategories(body, path, method, user string, id int, request events.A
 	return 400, "Method invalid"
 }
 
-func ProcessCurrencies(path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+func ProcessCurrencies(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
 	fmt.Println("Start ProcessCurrencies with method: ", method)
-	return routers.SelectCurrencies(request)
+	switch method {
+	case "PUT":
+		return routers.UpdateCurrencies(body, user)
+	case "GET":
+		return routers.SelectCurrencies(request)
+	}
+	return 400, "Method invalid"
 }
 
 func ProcessOrders(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
