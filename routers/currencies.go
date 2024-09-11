@@ -61,14 +61,8 @@ func UpdateCurrencies(body, User string) (int, string) {
 		return 400, "The EUR rate is missing or incorrect"
 	}
 
-	// Obtener la fecha de última actualización
-	timeLastUpdate, ok := requestData["timeLastUpdate"].(string)
-	if !ok || len(timeLastUpdate) == 0 {
-		return 400, "The timeLastUpdate is missing or incorrect"
-	}
-
 	// Llamar a la función para actualizar las tasas de cambio
-	err2 := db.UpdateCurrencies(currencies, timeLastUpdate)
+	err2 := db.UpdateCurrencies(currencies)
 	if err2 != nil {
 		return 400, "Error when updating into the database: " + err2.Error()
 	}

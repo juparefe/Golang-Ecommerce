@@ -41,7 +41,7 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	return Currency, nil
 }
 
-func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) error {
+func UpdateCurrencies(currencies map[string]float64) error {
 	fmt.Println("Executing UpdateCurrencies in database")
 	err := DbConnect()
 	if err != nil {
@@ -67,20 +67,20 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 
 		if exists {
 			// Si la fila existe, actualizar la tasa de cambio y la fecha de actualización
-			updateQuery := `UPDATE exchange_rates SET rate = ?, last_updated = ? WHERE base_currency = ? AND target_currency = ?`
+			updateQuery := `UPDATE exchange_rates SET rate = ?, WHERE base_currency = ? AND target_currency = ?`
 			fmt.Println("Script update currencies: ", updateQuery)
-			_, err = Db.Exec(updateQuery, rate, timeLastUpdate, baseCurrency, targetCurrency)
+			_, err = Db.Exec(updateQuery, rate, baseCurrency, targetCurrency)
 			if err != nil {
 				return fmt.Errorf("error updating row: %v", err)
 			}
 		} else {
 			// Si la fila no existe, insertar una nueva fila
 			insertQuery := `
-				INSERT INTO exchange_rates (base_currency, target_currency, rate, last_updated)
+				INSERT INTO exchange_rates (base_currency, target_currency, rate)
 				VALUES (?, ?, ?, ?)
 			`
 			fmt.Println("Script insert currencies: ", insertQuery)
-			_, err = Db.Exec(insertQuery, baseCurrency, targetCurrency, rate, timeLastUpdate)
+			_, err = Db.Exec(insertQuery, baseCurrency, targetCurrency, rate)
 			if err != nil {
 				return fmt.Errorf("error inserting new row: %v", err)
 			}
