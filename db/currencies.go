@@ -77,7 +77,7 @@ func UpdateCurrencies(currencies map[string]float64) error {
 			// Si la fila no existe, insertar una nueva fila
 			insertQuery := `
 				INSERT INTO exchange_rates (base_currency, target_currency, rate)
-				VALUES (?, ?, ?, ?)
+				VALUES (?, ?, ?)
 			`
 			fmt.Println("Script insert currencies: ", insertQuery)
 			_, err = Db.Exec(insertQuery, baseCurrency, targetCurrency, rate)
