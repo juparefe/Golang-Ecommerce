@@ -27,15 +27,15 @@ func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error
 	var currencyRate sql.NullFloat64
 	var lastUpdated time.Time
 
-	err = row.Scan(&baseCurrency, &currencyRate, &lastUpdated, &targetCurrency)
+	err = row.Scan(&baseCurrency, &targetCurrency, &currencyRate, &lastUpdated)
 	if err != nil {
 		fmt.Println("Error scanning row with base_currency = '" + BaseCurrency + "' and target_currency = '" + TargetCurrency + ", " + err.Error())
 		return Currency, err
 	}
 	Currency.BaseCurrency = baseCurrency.String
+	Currency.TargetCurrency = targetCurrency.String
 	Currency.CurrencyRate = currencyRate.Float64
 	Currency.LastUpdated = lastUpdated
-	Currency.TargetCurrency = targetCurrency.String
 
 	fmt.Println("SelectCurrency > Successfull execution")
 	return Currency, nil
