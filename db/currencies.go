@@ -64,6 +64,7 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 				WHERE base_currency = ? AND target_currency = ?
 			)
 		`
+		fmt.Println("Script check currencies: ", checkQuery)
 		err := Db.QueryRow(checkQuery, baseCurrency, targetCurrency).Scan(&exists)
 		if err != nil {
 			return fmt.Errorf("error checking if row exists: %v", err)
@@ -76,6 +77,7 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 				SET rate = ?, last_updated = ?
 				WHERE base_currency = ? AND target_currency = ?
 			`
+			fmt.Println("Script update currencies: ", updateQuery)
 			_, err = Db.Exec(updateQuery, rate, timeLastUpdate, baseCurrency, targetCurrency)
 			if err != nil {
 				return fmt.Errorf("error updating row: %v", err)
@@ -86,6 +88,7 @@ func UpdateCurrencies(currencies map[string]float64, timeLastUpdate string) erro
 				INSERT INTO exchange_rates (base_currency, target_currency, rate, last_updated)
 				VALUES (?, ?, ?, ?)
 			`
+			fmt.Println("Script insert currencies: ", insertQuery)
 			_, err = Db.Exec(insertQuery, baseCurrency, targetCurrency, rate, timeLastUpdate)
 			if err != nil {
 				return fmt.Errorf("error inserting new row: %v", err)
