@@ -38,7 +38,7 @@ func SelectCurrencies(request events.APIGatewayV2HTTPRequest) (int, string) {
 	} else {
 		currencies, err = db.SelectCurrencies(BaseCurrency)
 		if err != nil {
-			return 400, "Error trying to get currency rate: " + err.Error()
+			return 400, "Error trying to get currencies rates: " + err.Error()
 		}
 
 		Currency, err2 := json.Marshal(currencies)
