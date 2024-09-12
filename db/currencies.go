@@ -9,7 +9,60 @@ import (
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
 
-func SelectCurrency(BaseCurrency, TargetCurrency string) (models.Currency, error) {
+func SelectCurrencies(BaseCurrency string) (models.Currencies, error) {
+	fmt.Println("Executing SelectCurrencies in database")
+	var Currencies models.Currencies
+	var lastUpdatedString sql.NullString
+
+	err := DbConnect()
+	if err != nil {
+		return Currencies, err
+	}
+	defer Db.Close()
+
+	script := "SELECT * FROM exchange_rates WHERE base_currency = '" + BaseCurrency + "';"
+	fmt.Println("Script Select: ", script)
+
+	rows, err := Db.Query(script)
+	if err != nil {
+		fmt.Println("Error getting exchange rates:", err.Error())
+		return Currencies, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var baseCurrency, targetCurrency sql.NullString
+		var currencyRate sql.NullFloat64
+
+		err = rows.Scan(&baseCurrency, &targetCurrency, &currencyRate, &lastUpdatedString)
+		if err != nil {
+			fmt.Println("Error scanning row:", err.Error())
+			return Currencies, err
+		}
+
+		// Asignar el valor de la tasa de cambio según la moneda objetivo
+		if targetCurrency.Valid && currencyRate.Valid {
+			switch strings.ToLower(targetCurrency.String) {
+			case "cop":
+				Currencies.COP = currencyRate.Float64
+			case "eur":
+				Currencies.EUR = currencyRate.Float64
+			case "usd":
+				Currencies.USD = currencyRate.Float64
+			}
+		}
+	}
+
+	// Convertir la última fecha de actualización a formato string para incluirla en el struct
+	if lastUpdatedString.Valid {
+		Currencies.TimeLastUpdate = lastUpdatedString.String
+	}
+
+	fmt.Println("SelectCurrencies > Successful execution")
+	return Currencies, nil
+}
+
+func SelectCurrencyByTarget(BaseCurrency, TargetCurrency string) (models.Currency, error) {
 	fmt.Println("Executing SelectCurrency in database")
 	var Currency models.Currency
 	err := DbConnect()

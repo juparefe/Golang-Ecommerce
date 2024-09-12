@@ -32,6 +32,13 @@ type Category struct {
 	CategTotalSold int    `json:"categTotalSold"`
 }
 
+type Currencies struct {
+	COP            float64 `json:"cop"`
+	EUR            float64 `json:"eur"`
+	TimeLastUpdate string  `json:"timeLastUpdate"`
+	USD            float64 `json:"usd"`
+}
+
 type Currency struct {
 	BaseCurrency   string  `json:"base_currency"`
 	CurrencyRate   float64 `json:"rate"`

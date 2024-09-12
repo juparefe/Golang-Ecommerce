@@ -5,33 +5,48 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/juparefe/Golang-Ecommerce/db"
+	"github.com/juparefe/Golang-Ecommerce/models"
 )
 
 func SelectCurrencies(request events.APIGatewayV2HTTPRequest) (int, string) {
 	var err error
 	var BaseCurrency string
 	var TargetCurrency string
+	var currency models.Currency
+	var currencies models.Currencies
 
 	requestBaseCurrency := request.QueryStringParameters["base_currency"]
 	requestTargetCurrency := request.QueryStringParameters["target_currency"]
-	if len(requestBaseCurrency) > 0 && len(requestTargetCurrency) > 0 {
+	if len(requestBaseCurrency) > 0 {
 		BaseCurrency = requestBaseCurrency
-		TargetCurrency = requestTargetCurrency
 	} else {
-		return 400, "The request data is incorrect: base_currency: " + requestBaseCurrency + ", target_currency: " + requestTargetCurrency
+		return 400, "The request data is incorrect: base_currency: " + requestBaseCurrency
 	}
+	// Obtener los tipos de cambio para el par de la base de datos, si hay target va a un metodo y sino al otro
+	if len(requestTargetCurrency) > 0 {
+		TargetCurrency = requestTargetCurrency
+		currency, err = db.SelectCurrencyByTarget(BaseCurrency, TargetCurrency)
+		if err != nil {
+			return 400, "Error trying to get currency rate: " + err.Error()
+		}
 
-	// Obtener los tipos de cambio para el par de la base de datos
-	currency, err := db.SelectCurrency(BaseCurrency, TargetCurrency)
-	if err != nil {
-		return 400, "Error trying to get currency rate: " + err.Error()
-	}
+		Currency, err2 := json.Marshal(currency)
+		if err2 != nil {
+			return 500, "Error trying to convert to JSON currency object" + err2.Error()
+		}
+		return 200, string(Currency)
+	} else {
+		currencies, err = db.SelectCurrencies(BaseCurrency)
+		if err != nil {
+			return 400, "Error trying to get currency rate: " + err.Error()
+		}
 
-	Currency, err2 := json.Marshal(currency)
-	if err2 != nil {
-		return 500, "Error trying to convert to JSON currency object" + err2.Error()
+		Currency, err2 := json.Marshal(currencies)
+		if err2 != nil {
+			return 500, "Error trying to convert to JSON currencies object" + err2.Error()
+		}
+		return 200, string(Currency)
 	}
-	return 200, string(Currency)
 }
 
 func UpdateCurrencies(body, User string) (int, string) {
