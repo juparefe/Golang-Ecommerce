@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -55,11 +56,28 @@ func SelectCurrencies(BaseCurrency string) (models.Currencies, error) {
 
 	// Convertir la última fecha de actualización a formato string para incluirla en el struct
 	if lastUpdatedString.Valid {
-		Currencies.TimeLastUpdate = lastUpdatedString.String
-	}
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", lastUpdatedString.String)
+		if err != nil {
+			fmt.Println("Error parsing last_updated time: ", err.Error())
+			return Currencies, err
+		}
+		// Verificar si lastUpdated es hoy
+		currentDate := time.Now().Truncate(24 * time.Hour)
+		if parsedTime.Truncate(24 * time.Hour).Equal(currentDate) {
+			fmt.Println("Data is from today")
+			Currencies.TimeLastUpdate = lastUpdatedString.String
 
-	fmt.Println("SelectCurrencies > Successful execution")
-	return Currencies, nil
+			fmt.Println("SelectCurrencies > Successful execution")
+			return Currencies, nil
+		} else {
+			errorMessage := fmt.Sprintf("Data is not from today: last updated on %s", lastUpdatedString.String)
+			fmt.Println(errorMessage)
+			return Currencies, errors.New(errorMessage)
+		}
+	} else {
+		fmt.Println("No valid last_updated date found")
+		return Currencies, errors.New("no valid last_updated date found")
+	}
 }
 
 func SelectCurrencyByTarget(BaseCurrency, TargetCurrency string) (models.Currency, error) {
