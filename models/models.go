@@ -61,11 +61,14 @@ type Orders struct {
 }
 
 type OrdersDetails struct {
-	OD_Id       int     `json:"odId"`
-	OD_OrderId  int     `json:"odOrderId"`
-	OD_ProdId   int     `json:"odProdId"`
-	OD_Quantity int     `json:"odQuantity"`
-	OD_Price    float64 `json:"odPrice"`
+	OD_Currency             string  `json:"odCurrency"`
+	OD_Currency_Last_Symbol string  `json:"odCurrencyLastSymbol"`
+	OD_Currency_Symbol      string  `json:"odCurrencySymbol"`
+	OD_Id                   int     `json:"odId"`
+	OD_OrderId              int     `json:"odOrderId"`
+	OD_ProdId               int     `json:"odProdId"`
+	OD_Quantity             int     `json:"odQuantity"`
+	OD_Price                float64 `json:"odPrice"`
 }
 
 type Product struct {

@@ -107,7 +107,7 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 		o.Order_AddID = int(OrderAddId.Int32)
 
 		var rowsD *sql.Rows
-		scriptD := "SELECT OD_Id, OD_ProdId, OD_Quantity, OD_Price FROM orders_detail WHERE OD_OrderID = " + strconv.Itoa(o.Order_Id)
+		scriptD := "SELECT OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol, OD_Id, OD_ProdId, OD_Quantity, OD_Price FROM orders_detail WHERE OD_OrderID = " + strconv.Itoa(o.Order_Id)
 		fmt.Println("Script Select Order details: ", scriptD)
 
 		rowsD, err = Db.Query(scriptD)
@@ -115,14 +115,18 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 			return Orders, err
 		}
 		for rowsD.Next() {
+			var OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol string
 			var OD_Id, OD_ProdId, OD_Quantity int64
 			var OD_Price float64
-			err = rowsD.Scan(&OD_Id, &OD_ProdId, &OD_Quantity, &OD_Price)
+			err = rowsD.Scan(&OD_Currency, &OD_Currency_Last_Symbol, &OD_Currency_Symbol, &OD_Id, &OD_ProdId, &OD_Quantity, &OD_Price)
 			if err != nil {
 				return Orders, err
 			}
 
 			var od models.OrdersDetails
+			od.OD_Currency = OD_Currency
+			od.OD_Currency_Last_Symbol = OD_Currency_Last_Symbol
+			od.OD_Currency_Symbol = OD_Currency_Symbol
 			od.OD_Id = int(OD_Id)
 			od.OD_ProdId = int(OD_ProdId)
 			od.OD_Quantity = int(OD_Quantity)
