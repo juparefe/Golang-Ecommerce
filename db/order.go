@@ -35,7 +35,7 @@ func InsertOrder(o models.Orders) (int64, error) {
 
 	for _, od := range o.OrderDetails {
 		script = "INSERT INTO orders_detail (OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol, OD_OrderId, OD_ProdId, OD_Quantity, OD_Price) "
-		script += "VALUES (" + od.OD_Currency + "," + od.OD_Currency_Last_Symbol + "," + od.OD_Currency_Symbol + "," + strconv.Itoa(int(LastInsertId)) + ","
+		script += "VALUES ('" + od.OD_Currency + "','" + od.OD_Currency_Last_Symbol + "','" + od.OD_Currency_Symbol + "'," + strconv.Itoa(int(LastInsertId)) + ","
 		script += strconv.Itoa(od.OD_ProdId) + "," + strconv.Itoa(od.OD_Quantity) + "," + strconv.FormatFloat(od.OD_Price, 'f', -1, 64) + ");"
 		fmt.Println("Script Insert Orders Detail: ", script)
 		_, err = Db.Exec(script)
