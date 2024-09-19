@@ -116,7 +116,7 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 			return Orders, err
 		}
 		for rowsD.Next() {
-			var OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol string
+			var OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol sql.NullString
 			var OD_Id, OD_ProdId, OD_Quantity int64
 			var OD_Price float64
 			err = rowsD.Scan(&OD_Currency, &OD_Currency_Last_Symbol, &OD_Currency_Symbol, &OD_Id, &OD_ProdId, &OD_Quantity, &OD_Price)
@@ -125,9 +125,9 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 			}
 
 			var od models.OrdersDetails
-			od.OD_Currency = OD_Currency
-			od.OD_Currency_Last_Symbol = OD_Currency_Last_Symbol
-			od.OD_Currency_Symbol = OD_Currency_Symbol
+			od.OD_Currency = OD_Currency.String
+			od.OD_Currency_Last_Symbol = OD_Currency_Last_Symbol.String
+			od.OD_Currency_Symbol = OD_Currency_Symbol.String
 			od.OD_Id = int(OD_Id)
 			od.OD_ProdId = int(OD_ProdId)
 			od.OD_Quantity = int(OD_Quantity)
