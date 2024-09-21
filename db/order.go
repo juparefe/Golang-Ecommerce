@@ -43,6 +43,13 @@ func InsertOrder(o models.Orders) (int64, error) {
 			fmt.Println("Error inserting:", err.Error())
 			return 0, err
 		}
+		script = "UPDATE products SET Prod_Stock = GREATEST(Prod_Stock - " + strconv.Itoa(od.OD_Quantity) + ", 0) WHERE Prod_Id = " + strconv.Itoa(od.OD_ProdId) + ";"
+		fmt.Println("Script Update Product Stock: ", script)
+		_, err = Db.Exec(script)
+		if err != nil {
+			fmt.Println("Error updating product stock:", err.Error())
+			return 0, err
+		}
 	}
 	fmt.Println("InsertOrder > Successfull execution")
 	return LastInsertId, nil
