@@ -54,8 +54,8 @@ func UserIsAdmin(userUUID string) (bool, string) {
 		return false, err.Error()
 	}
 	defer Db.Close()
-	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status = 0"
-	fmt.Println("Script Select: ", script)
+	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status IN (1,2);"
+	fmt.Println("Script Select user role: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
@@ -71,6 +71,31 @@ func UserIsAdmin(userUUID string) (bool, string) {
 		return true, ""
 	}
 	return false, "User is not admin"
+}
+
+func UserIsSuperAdmin(userUUID string) (bool, string) {
+	err := DbConnect()
+	if err != nil {
+		return false, err.Error()
+	}
+	defer Db.Close()
+	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status=2;"
+	fmt.Println("Script Select user role: ", script)
+
+	rows, err := Db.Query(script)
+	if err != nil {
+		return false, err.Error()
+	}
+
+	var value string
+	rows.Next()
+	rows.Scan(&value)
+	fmt.Println("UserIsSuperAdmin > Successfull execution: ", value)
+
+	if value == "1" {
+		return true, ""
+	}
+	return false, "User is not super admin"
 }
 
 func UserExists(userUUID string) (error, bool) {

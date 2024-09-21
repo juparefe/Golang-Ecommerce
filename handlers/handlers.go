@@ -154,9 +154,10 @@ func ProcessUsers(body, path, method, user, id string, request events.APIGateway
 		case "GET":
 			return routers.SelectUser(body, user)
 		}
-	}
-	if path == "users" && method == "GET" {
+	} else if path == "users" && method == "GET" {
 		return routers.SelectUsers(body, user, request)
+	} else {
+		return routers.UpdateUserRole(body, user)
 	}
 	return 400, "Method invalid"
 }

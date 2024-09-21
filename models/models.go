@@ -99,3 +99,8 @@ type User struct {
 	UserDateAdd   string `json:"userDateAdd"`
 	UserDateUpg   string `json:"userDateUpg"`
 }
+
+type UserRole struct {
+	UserUUID string `json:"userUUID"`
+	UserRole string `json:"userRole"`
+}
