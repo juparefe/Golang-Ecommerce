@@ -82,14 +82,14 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 		} else {
 			where += " WHERE " + whereUser
 		}
-		limit := "ORDER BY Order_Id DESC LIMIT 10 "
+		limit := " ORDER BY Order_Id DESC LIMIT 10 "
 		if offset > 0 {
 			limit += " OFFSET " + strconv.Itoa(offset)
 		}
 		script += where + limit
 	}
 
-	fmt.Println("Script Select: ", script)
+	fmt.Println("Script Select Orders: ", script)
 	err := DbConnect()
 	if err != nil {
 		return Orders, err
