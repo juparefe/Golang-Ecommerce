@@ -110,9 +110,9 @@ func SelectProducts(request events.APIGatewayV2HTTPRequest) (int, string) {
 		t.ProdPath = param["slug"]
 	}
 
-	fmt.Println("Search parameters: ", param)
 	result, err := db.SelectProducts(t, choice, orderType, orderField, page, pageSize)
 	if err != nil {
+		fmt.Println("Search parameters for products: ", param)
 		return 400, "Error trying to get product/s of Type: '" + choice + "', Error: " + err.Error()
 	}
 

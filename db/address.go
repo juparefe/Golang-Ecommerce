@@ -21,11 +21,11 @@ func InsertAddress(a models.Address, User string) error {
 	script := "INSERT INTO addresses (Add_UserId, Add_Address, Add_City, Add_State, Add_PostalCode, Add_Phone, Add_Title, Add_Name)"
 	script += " VALUES ('" + User + "','" + a.AddAddress + "','" + a.AddCity + "','" + a.AddState + "','" + a.AddPostalCode + "','"
 	script += a.AddPhone + "','" + a.AddTitle + "','" + a.AddName + "');"
-	fmt.Println("Script Insert: ", script)
 
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error inserting:", err.Error())
+		fmt.Println("Script InsertAddress: ", script)
+		fmt.Println("Error inserting address:", err.Error())
 		return err
 	}
 
@@ -42,10 +42,10 @@ func AddressExists(User string, id int) (error, bool) {
 	defer Db.Close()
 
 	script := "SELECT 1 FROM addresses WHERE Add_Id='" + strconv.Itoa(id) + "' AND Add_UserId = '" + User + "';"
-	fmt.Println("Script Search Address: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
+		fmt.Println("Script Search Address: ", script)
 		return err, false
 	}
 
@@ -77,10 +77,10 @@ func UpdateAddress(a models.Address) error {
 	script = tools.CreateScript(script, "Add_State", "S", a.AddState, 0, 0)
 	script = tools.CreateScript(script, "Add_Title", "S", a.AddTitle, 0, 0)
 	script += " WHERE Add_Id = " + strconv.Itoa(a.AddId) + ";"
-	fmt.Println("Script Update: ", script)
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script UpdateAddress: ", script)
+		fmt.Println("Error updating address:", err.Error())
 		return err
 	}
 
@@ -97,10 +97,10 @@ func DeleteAddress(id int) error {
 	defer Db.Close()
 
 	script := "DELETE FROM addresses WHERE Add_Id = " + strconv.Itoa(id)
-	fmt.Println("Script Delete: ", script)
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script DeleteAddress: ", script)
+		fmt.Println("Error deleting address:", err.Error())
 		return err
 	}
 
@@ -118,11 +118,11 @@ func SelectAddress(User string) ([]models.Address, error) {
 	defer Db.Close()
 
 	script := "SELECT Add_Id, Add_Address, Add_City, Add_Name, Add_Phone, Add_PostalCode, Add_State, Add_Title FROM addresses WHERE Add_UserId = '" + User + "';"
-	fmt.Println("Script Select: ", script)
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectAddress: ", script)
 		fmt.Println("Error getting addresses:", err.Error())
 		return Addresses, err
 	}

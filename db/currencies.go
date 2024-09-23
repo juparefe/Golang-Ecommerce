@@ -22,10 +22,10 @@ func SelectCurrencies(BaseCurrency string) (models.Currencies, error) {
 	defer Db.Close()
 
 	script := "SELECT * FROM exchange_rates WHERE base_currency = '" + BaseCurrency + "';"
-	fmt.Println("Script Select: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectCurrencies: ", script)
 		fmt.Println("Error getting exchange rates:", err.Error())
 		return Currencies, err
 	}
@@ -64,7 +64,6 @@ func SelectCurrencies(BaseCurrency string) (models.Currencies, error) {
 		// Verificar si lastUpdated es hoy
 		currentDate := time.Now().Truncate(24 * time.Hour)
 		if parsedTime.Truncate(24 * time.Hour).Equal(currentDate) {
-			fmt.Println("Data is from today")
 			Currencies.TimeLastUpdate = lastUpdatedString.String
 
 			fmt.Println("SelectCurrencies > Successful execution")
@@ -90,7 +89,6 @@ func SelectCurrencyByTarget(BaseCurrency, TargetCurrency string) (models.Currenc
 	defer Db.Close()
 
 	script := "SELECT * FROM exchange_rates WHERE base_currency = '" + BaseCurrency + "' AND target_currency = '" + TargetCurrency + "';"
-	fmt.Println("Script Select: ", script)
 
 	var row *sql.Row
 	row = Db.QueryRow(script)
@@ -100,6 +98,7 @@ func SelectCurrencyByTarget(BaseCurrency, TargetCurrency string) (models.Currenc
 
 	err = row.Scan(&baseCurrency, &targetCurrency, &currencyRate, &lastUpdatedString)
 	if err != nil {
+		fmt.Println("Script SelectCurrencyByTarget: ", script)
 		fmt.Println("Error scanning row with base_currency = '" + BaseCurrency + "' and target_currency = '" + TargetCurrency + ", " + err.Error())
 		return Currency, err
 	}
@@ -118,7 +117,6 @@ func SelectCurrencyByTarget(BaseCurrency, TargetCurrency string) (models.Currenc
 	// Verificar si lastUpdated es hoy
 	currentDate := time.Now().Truncate(24 * time.Hour)
 	if lastUpdated.Truncate(24 * time.Hour).Equal(currentDate) {
-		fmt.Println("Data is from today")
 		Currency.BaseCurrency = baseCurrency.String
 		Currency.TargetCurrency = targetCurrency.String
 		Currency.CurrencyRate = currencyRate.Float64
@@ -150,18 +148,18 @@ func UpdateCurrencies(currencies map[string]float64) error {
 		// Verificar si la fila ya existe en la base de datos
 		var exists bool
 		checkQuery := `SELECT EXISTS (SELECT 1 FROM exchange_rates WHERE base_currency = ? AND target_currency = ?)`
-		fmt.Println("Script check currencies: ", checkQuery)
 		err := Db.QueryRow(checkQuery, baseCurrency, targetCurrency).Scan(&exists)
 		if err != nil {
+			fmt.Println("Script check currencies: ", checkQuery)
 			return fmt.Errorf("error checking if row exists: %v", err)
 		}
 
 		if exists {
 			// Si la fila existe, actualizar la tasa de cambio y la fecha de actualización
 			updateQuery := `UPDATE exchange_rates SET rate = ? WHERE base_currency = ? AND target_currency = ?`
-			fmt.Println("Script update currencies: ", updateQuery)
 			_, err = Db.Exec(updateQuery, rate, baseCurrency, targetCurrency)
 			if err != nil {
+				fmt.Println("Script UpdateCurrencies: ", updateQuery)
 				return fmt.Errorf("error updating row: %v", err)
 			}
 		} else {
@@ -170,9 +168,9 @@ func UpdateCurrencies(currencies map[string]float64) error {
 				INSERT INTO exchange_rates (base_currency, target_currency, rate)
 				VALUES (?, ?, ?)
 			`
-			fmt.Println("Script insert currencies: ", insertQuery)
 			_, err = Db.Exec(insertQuery, baseCurrency, targetCurrency, rate)
 			if err != nil {
+				fmt.Println("Script InsertCurrencies: ", insertQuery)
 				return fmt.Errorf("error inserting new row: %v", err)
 			}
 		}

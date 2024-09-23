@@ -30,7 +30,6 @@ func ValidateToken(token string) (bool, error, string) {
 	}
 
 	part1 := parts[1]
-	fmt.Println("Part 1", part1)
 	userInfo, err := base64.StdEncoding.DecodeString(part1)
 	if err != nil {
 		part1 = parts[1] + "="
@@ -54,8 +53,7 @@ func ValidateToken(token string) (bool, error, string) {
 	// Fecha de vencimiento del token
 	expTime := time.Unix(int64(tkj.Exp), 0)
 	if expTime.Before(now) {
-		fmt.Println("Token expiration date: ", expTime.String())
-		fmt.Println("Token expirated!!!")
+		fmt.Println("Token expirated!!! Expiration date: ", expTime.String())
 		return false, err, "Token expirated!!!"
 	}
 

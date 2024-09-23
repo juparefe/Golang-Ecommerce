@@ -12,13 +12,12 @@ import (
 
 func GetSecret(secretName string) (models.SecretRDSJson, error) {
 	secretData := models.SecretRDSJson{}
-	fmt.Println("Getting secret: " + secretName)
 	svc := secretsmanager.NewFromConfig(awsgo.Config)
 	secretValue, err := svc.GetSecretValue(awsgo.Context, &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(secretName),
 	})
 	if err != nil {
-		fmt.Println("Error getting secret value:", err.Error())
+		fmt.Println("Error getting secret value ", secretName, ": ", err.Error())
 		return secretData, err
 	}
 	// Procesar el secretValue y guardarlo en secretData
@@ -27,6 +26,6 @@ func GetSecret(secretName string) (models.SecretRDSJson, error) {
 		fmt.Println("Error unmarshalling secret: ", secretName, err.Error())
 		return secretData, err
 	}
-	fmt.Println("Secret data OK: ", secretData)
+	fmt.Println("Secret data OK: ")
 	return secretData, nil
 }

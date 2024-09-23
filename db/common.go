@@ -23,7 +23,7 @@ func ReadSecret() error {
 func DbConnect() error {
 	Db, err = sql.Open("mysql", ConnectionString(SecretModel))
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Error trying connection to the database:", err.Error())
 		return err
 	}
 
@@ -44,7 +44,6 @@ func ConnectionString(keys models.SecretRDSJson) string {
 	dbEndpoint = keys.Host
 	dbName = "gambit"
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?allowCleartextPasswords=true", dbUser, authToken, dbEndpoint, dbName)
-	fmt.Println("dsn:", dsn)
 	return dsn
 }
 
@@ -55,10 +54,10 @@ func UserIsAdmin(userUUID string) (bool, string) {
 	}
 	defer Db.Close()
 	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status IN (1,2);"
-	fmt.Println("Script Select user role: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
+		fmt.Println("Script Select user role: ", script)
 		return false, err.Error()
 	}
 
@@ -80,10 +79,10 @@ func UserIsSuperAdmin(userUUID string) (bool, string) {
 	}
 	defer Db.Close()
 	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status=2;"
-	fmt.Println("Script Select user role: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
+		fmt.Println("Script Select user role: ", script)
 		return false, err.Error()
 	}
 
@@ -105,10 +104,10 @@ func UserExists(userUUID string) (error, bool) {
 	}
 	defer Db.Close()
 	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "'"
-	fmt.Println("Script Search User: ", script)
 
 	rows, err := Db.Query(script)
 	if err != nil {
+		fmt.Println("Script Search User: ", script)
 		return err, false
 	}
 

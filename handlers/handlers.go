@@ -18,7 +18,6 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return statusCode, user
 	}
 
-	fmt.Println("Path to validate: ", path[0:4])
 	switch path[0:4] {
 	case "addr":
 		return ProcessAddresses(body, path, method, user, idn, request)
@@ -46,7 +45,7 @@ func ValidateAuthorization(path string, method string, headers map[string]string
 	}
 
 	token := headers["authorization"]
-	fmt.Println("authorization: ", headers["authorization"])
+
 	if len(token) == 0 {
 		return false, 401, "Token required"
 	}
@@ -54,9 +53,11 @@ func ValidateAuthorization(path string, method string, headers map[string]string
 	everythingOk, err, msg := auth.ValidateToken(token)
 	if !everythingOk {
 		if err != nil {
+			fmt.Println("Authorization: ", headers["authorization"])
 			fmt.Println("Error in the token: ", err.Error())
 			return false, 401, err.Error()
 		} else {
+			fmt.Println("Authorization: ", headers["authorization"])
 			fmt.Println("Error in the token: ", msg)
 			return false, 401, msg
 		}

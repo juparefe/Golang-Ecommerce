@@ -21,12 +21,12 @@ func InsertCategory(c models.Category) (int64, error) {
 	defer Db.Close()
 
 	script := "INSERT INTO category (Categ_Name, Categ_Path) VALUES ('" + c.CategName + "', '" + c.CategPath + "')"
-	fmt.Println("Script Insert: ", script)
 
 	var result sql.Result
 	result, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script InsertCategory: ", script)
+		fmt.Println("Error inserting category:", err.Error())
 		return 0, err
 	}
 
@@ -59,10 +59,11 @@ func UpdateCategory(c models.Category) error {
 		script += " Categ_Path = '" + tools.EscapeString(c.CategPath) + "'"
 	}
 	script += " WHERE Categ_ID = " + strconv.Itoa(c.CategId)
-	fmt.Println("Script Update: ", script)
+
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script UpdateCategory: ", script)
+		fmt.Println("Error updating category:", err.Error())
 		return err
 	}
 
@@ -79,10 +80,11 @@ func DeleteCategory(id int) error {
 	defer Db.Close()
 
 	script := "DELETE FROM category WHERE Categ_Id = " + strconv.Itoa(id)
-	fmt.Println("Script Delete: ", script)
+
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script DeleteCategory: ", script)
+		fmt.Println("Error deleting category:", err.Error())
 		return err
 	}
 
@@ -106,11 +108,11 @@ func SelectCategories(CategId int, Slug string) ([]models.Category, error) {
 	if len(Slug) > 0 {
 		script += "WHERE Categ_Path LIKE '%" + Slug + "%'"
 	}
-	fmt.Println("Script Select: ", script)
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectCategories: ", script)
 		fmt.Println("Error getting categories:", err.Error())
 		return Categ, err
 	}
@@ -152,11 +154,11 @@ func SelectTopCategories() ([]models.Category, error) {
 				GROUP BY c.Categ_Id, c.Categ_Name, c.Categ_Path
 				ORDER BY TotalSold DESC
 				LIMIT 6;`
-	fmt.Println("Script Select: ", script)
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectTopCategories: ", script)
 		fmt.Println("Error getting top categories:", err.Error())
 		return Categ, err
 	}
@@ -179,6 +181,6 @@ func SelectTopCategories() ([]models.Category, error) {
 		Categ = append(Categ, c)
 	}
 
-	fmt.Println("SelectCategory > Successfull execution")
+	fmt.Println("SelectTopCategories > Successfull execution")
 	return Categ, nil
 }

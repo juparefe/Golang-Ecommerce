@@ -53,12 +53,12 @@ func InsertProduct(p models.Product) (int64, error) {
 		script += ",'" + tools.EscapeString(p.ProdPath) + "'"
 	}
 	script += ");"
-	fmt.Println("Script Insert: ", script)
 
 	var result sql.Result
 	result, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script InsertProduct: ", script)
+		fmt.Println("Error inserting product: ", err.Error())
 		return 0, err
 	}
 
@@ -87,10 +87,11 @@ func UpdateProduct(p models.Product) error {
 	script = tools.CreateScript(script, "Prod_Stock", "N", "", p.ProdStock, 0)
 	script = tools.CreateScript(script, "Prod_Path", "S", p.ProdPath, 0, 0)
 	script += " WHERE Prod_Id = " + strconv.Itoa(p.ProdId) + ";"
-	fmt.Println("Script Update: ", script)
+
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script UpdateProduct: ", script)
+		fmt.Println("Error updating product:", err.Error())
 		return err
 	}
 
@@ -107,10 +108,11 @@ func DeleteProduct(id int) error {
 	defer Db.Close()
 
 	script := "DELETE FROM products WHERE Prod_Id = " + strconv.Itoa(id)
-	fmt.Println("Script Delete: ", script)
+
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script DeleteProduct: ", script)
+		fmt.Println("Error deleting product:", err.Error())
 		return err
 	}
 
@@ -146,12 +148,12 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		where = " WHERE UCASE(Prod_Path) LIKE '%" + strings.ToUpper(p.ProdPath) + "%'"
 	}
 	scriptCount += where
-	fmt.Println("Script Select Count: ", scriptCount)
 
 	var rows *sql.Rows
 	rows, err = Db.Query(scriptCount)
 	defer rows.Close()
 	if err != nil {
+		fmt.Println("Script SelectProductsCount: ", scriptCount)
 		fmt.Println("Error getting products count:", err.Error())
 		return ProductRes, err
 	}
@@ -199,10 +201,10 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		}
 	}
 	script += where + orderBy + limit
-	fmt.Println("Script Select: ", script)
 
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectProducts: ", script)
 		fmt.Println("Error getting products:", err.Error())
 		return ProductRes, err
 	}
@@ -249,10 +251,11 @@ func UpdateStock(p models.Product) error {
 	defer Db.Close()
 
 	script := "UPDATE products SET Prod_Stock = Prod_Stock + " + strconv.Itoa(p.ProdStock) + " WHERE Prod_Id = " + strconv.Itoa(p.ProdId) + ";"
-	fmt.Println("Script Update stock: ", script)
+
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		fmt.Println("Script UpdateStock: ", script)
+		fmt.Println("Error updating stock:", err.Error())
 		return err
 	}
 

@@ -19,12 +19,12 @@ func InsertOrder(o models.Orders) (int64, error) {
 
 	script := "INSERT INTO orders (Order_UserUUID, Order_Total, Order_AddId)"
 	script += " VALUES ('" + o.Order_UserUUID + "','" + strconv.FormatFloat(o.Order_Total, 'f', -1, 64) + "','" + strconv.Itoa(o.Order_AddID) + "');"
-	fmt.Println("Script Insert Orders: ", script)
 
 	var result sql.Result
 	result, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error inserting:", err.Error())
+		fmt.Println("Script InsertOrder: ", script)
+		fmt.Println("Error inserting order:", err.Error())
 		return 0, err
 	}
 
@@ -37,16 +37,16 @@ func InsertOrder(o models.Orders) (int64, error) {
 		script = "INSERT INTO orders_detail (OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol, OD_OrderId, OD_ProdId, OD_Quantity, OD_Price) "
 		script += "VALUES ('" + od.OD_Currency + "','" + od.OD_Currency_Last_Symbol + "','" + od.OD_Currency_Symbol + "'," + strconv.Itoa(int(LastInsertId)) + ","
 		script += strconv.Itoa(od.OD_ProdId) + "," + strconv.Itoa(od.OD_Quantity) + "," + strconv.FormatFloat(od.OD_Price, 'f', -1, 64) + ");"
-		fmt.Println("Script Insert Orders Detail: ", script)
 		_, err = Db.Exec(script)
 		if err != nil {
-			fmt.Println("Error inserting:", err.Error())
+			fmt.Println("Script Insert Orders Detail: ", script)
+			fmt.Println("Error inserting orders detail:", err.Error())
 			return 0, err
 		}
 		script = "UPDATE products SET Prod_Stock = GREATEST(Prod_Stock - " + strconv.Itoa(od.OD_Quantity) + ", 0) WHERE Prod_Id = " + strconv.Itoa(od.OD_ProdId) + ";"
-		fmt.Println("Script Update Product Stock: ", script)
 		_, err = Db.Exec(script)
 		if err != nil {
+			fmt.Println("Script UpdateProductStock: ", script)
 			fmt.Println("Error updating product stock:", err.Error())
 			return 0, err
 		}
@@ -89,7 +89,6 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 		script += where + limit
 	}
 
-	fmt.Println("Script Select Orders: ", script)
 	err := DbConnect()
 	if err != nil {
 		return Orders, err
@@ -99,6 +98,7 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script Select Orders: ", script)
 		return Orders, err
 	}
 	defer rows.Close()
@@ -116,10 +116,10 @@ func SelectOrders(user, startDate, endDate string, orderId, page int) ([]models.
 
 		var rowsD *sql.Rows
 		scriptD := "SELECT OD_Currency, OD_Currency_Last_Symbol, OD_Currency_Symbol, OD_Id, OD_ProdId, OD_Quantity, OD_Price FROM orders_detail WHERE OD_OrderID = " + strconv.Itoa(o.Order_Id)
-		fmt.Println("Script Select Order details: ", scriptD)
 
 		rowsD, err = Db.Query(scriptD)
 		if err != nil {
+			fmt.Println("Script SelectOrderDetails: ", scriptD)
 			return Orders, err
 		}
 		for rowsD.Next() {

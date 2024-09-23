@@ -24,11 +24,11 @@ func UpdateUser(u models.User, User string) error {
 	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
 	script = tools.CreateScript(script, "User_DateUpg", "S", tools.DateMySQL(), 0, 0)
 	script += " WHERE User_UUID = '" + User + "';"
-	fmt.Println("Script Update: ", script)
 
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error Updating:", err.Error())
+		fmt.Println("Script UpdateUser: ", script)
+		fmt.Println("Error Updating user:", err.Error())
 		return err
 	}
 
@@ -45,11 +45,11 @@ func UpdateUserRole(u models.UserRole, User string) error {
 	defer Db.Close()
 
 	script := "UPDATE users SET User_Status=" + u.UserRole + " WHERE User_UUID = '" + User + "';"
-	fmt.Println("Script Update: ", script)
 
 	_, err = Db.Exec(script)
 	if err != nil {
-		fmt.Println("Error Updating:", err.Error())
+		fmt.Println("Script UpdateUserRole: ", script)
+		fmt.Println("Error Updating user role:", err.Error())
 		return err
 	}
 
@@ -67,11 +67,11 @@ func SelectUser(UserId string) (models.User, error) {
 	defer Db.Close()
 
 	script := "SELECT * FROM users WHERE User_UUID = '" + UserId + "';"
-	fmt.Println("Script Select: ", script)
 
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectUser: ", script)
 		fmt.Println("Error getting user:", err.Error())
 		return User, err
 	}
@@ -102,16 +102,15 @@ func SelectUsers(Page int) (models.ListUsers, error) {
 	var offSet int = (Page * 10) - 10
 	script := "SELECT * FROM users LIMIT 10"
 	scriptCount := "SELECT COUNT(*) as records FROM users;"
-	fmt.Println("Script Select count: ", scriptCount)
 
 	if offSet > 0 {
 		script += " OFFSET " + strconv.Itoa(offSet)
 	}
-	fmt.Println("Script Select: ", script)
 
 	var rowsCount *sql.Rows
 	rowsCount, err = Db.Query(scriptCount)
 	if err != nil {
+		fmt.Println("Script SelectUsersCount: ", scriptCount)
 		fmt.Println("Error getting users count:", err.Error())
 		return lu, err
 	}
@@ -127,6 +126,7 @@ func SelectUsers(Page int) (models.ListUsers, error) {
 	var rows *sql.Rows
 	rows, err = Db.Query(script)
 	if err != nil {
+		fmt.Println("Script SelectUsers: ", script)
 		fmt.Println("Error getting users:", err.Error())
 		return lu, err
 	}
