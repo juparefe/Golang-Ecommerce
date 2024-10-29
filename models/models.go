@@ -73,16 +73,17 @@ type OrdersDetails struct {
 
 type Product struct {
 	ProdId          int     `json:"prodId"`
-	ProdTitle       string  `json:"prodTitle"`
-	ProdDescription string  `json:"prodDescription"`
-	ProdCreatedAt   string  `json:"prodCreatedAt"`
-	ProdUpdated     string  `json:"prodUpdated"`
-	ProdPrice       float64 `json:"prodPrice,omitempty"`
-	ProdStock       int     `json:"prodStock"`
 	ProdCategId     int     `json:"prodCategId"`
-	ProdPath        string  `json:"prodPath"`
-	ProdSearch      string  `json:"search,omitempty"`
 	ProdCategPath   string  `json:"categPath,omitempty"`
+	ProdCreatedAt   string  `json:"prodCreatedAt"`
+	ProdDescription string  `json:"prodDescription"`
+	ProdDiscount    float64 `json:"ProdDiscount,omitempty"`
+	ProdPath        string  `json:"prodPath"`
+	ProdPrice       float64 `json:"prodPrice,omitempty"`
+	ProdSearch      string  `json:"search,omitempty"`
+	ProdStock       int     `json:"prodStock"`
+	ProdTitle       string  `json:"prodTitle"`
+	ProdUpdated     string  `json:"prodUpdated"`
 }
 
 type ProductRes struct {

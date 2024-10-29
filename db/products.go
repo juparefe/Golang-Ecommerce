@@ -213,11 +213,11 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		var ProdId sql.NullInt32
 		var ProdTitle, ProdDescription sql.NullString
 		var ProdCreatedAt, ProdUpdated sql.NullString
-		var ProdPrice sql.NullFloat64
+		var ProdDiscount, ProdPrice sql.NullFloat64
 		var ProdPath sql.NullString
 		var ProdCategoryId, ProdStock sql.NullInt32
 
-		err := rows.Scan(&ProdId, &ProdTitle, &ProdDescription, &ProdCreatedAt, &ProdUpdated, &ProdPrice, &ProdPath, &ProdCategoryId, &ProdStock)
+		err := rows.Scan(&ProdId, &ProdTitle, &ProdDescription, &ProdCreatedAt, &ProdUpdated, &ProdDiscount, &ProdPrice, &ProdPath, &ProdCategoryId, &ProdStock)
 		if err != nil {
 			return ProductRes, err
 		}
@@ -227,6 +227,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		p.ProdDescription = ProdDescription.String
 		p.ProdCreatedAt = ProdCreatedAt.String
 		p.ProdUpdated = ProdUpdated.String
+		p.ProdDiscount = ProdDiscount.Float64
 		p.ProdPrice = ProdPrice.Float64
 		p.ProdPath = ProdPath.String
 		p.ProdCategId = int(ProdCategoryId.Int32)
@@ -237,6 +238,30 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	ProductRes.Data = Prod
 	fmt.Println("SelectProducts > Successfull execution")
 	return ProductRes, nil
+}
+
+func UpdateDiscount(p models.Product) error {
+	fmt.Println("Executing UpdateDiscount in database")
+	if p.ProdDiscount <= 0 {
+		return errors.New("the discount to modify must be greater than 0")
+	}
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	script := "UPDATE products SET Prod_Discount = " + strconv.FormatFloat(p.ProdDiscount, 'f', 2, 64) + " WHERE Prod_Id = " + strconv.Itoa(p.ProdId) + ";"
+
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Script UpdateDiscount: ", script)
+		fmt.Println("Error updating discount:", err.Error())
+		return err
+	}
+
+	fmt.Println("UpdateDiscount > Successfull execution")
+	return nil
 }
 
 func UpdateStock(p models.Product) error {

@@ -25,6 +25,8 @@ func Handlers(path string, method string, body string, headers map[string]string
 		return ProcessCategories(body, path, method, user, idn, request)
 	case "curr":
 		return ProcessCurrencies(body, path, method, user, idn, request)
+	case "disc":
+		return ProcessDiscount(body, path, method, user, idn, request)
 	case "orde":
 		return ProcessOrders(body, path, method, user, idn, request)
 	case "prod":
@@ -105,6 +107,10 @@ func ProcessCurrencies(body, path, method, user string, id int, request events.A
 		return routers.SelectCurrencies(request)
 	}
 	return 400, "Method invalid"
+}
+
+func ProcessDiscount(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	return routers.UpdateDiscount(body, user, id)
 }
 
 func ProcessOrders(body, path, method, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
