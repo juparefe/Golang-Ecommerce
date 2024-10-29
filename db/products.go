@@ -131,7 +131,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	defer Db.Close()
 
 	var limit, script, scriptCount, where string
-	script = "SELECT Prod_Id, Prod_Title, Prod_Description, Prod_CreatedAt, Prod_Updated, Prod_Price, Prod_Path, Prod_CategoryId, Prod_Stock FROM products"
+	script = "SELECT Prod_Id, Prod_Title, Prod_Description, Prod_CreatedAt, Prod_Updated, Prod_Discount, Prod_Price, Prod_Path, Prod_CategoryId, Prod_Stock FROM products"
 	scriptCount = "SELECT COUNT(*) as records FROM products "
 	switch choice {
 	case "C":
