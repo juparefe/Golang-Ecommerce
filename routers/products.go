@@ -11,6 +11,24 @@ import (
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
 
+func DeleteProduct(User string, id int) (int, string) {
+	if id == 0 {
+		return 400, "The request data (ID) is incorrect"
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	err := db.DeleteProduct(id)
+	if err != nil {
+		return 400, "Error when deleting into the database: " + strconv.Itoa(id) + " > " + err.Error()
+	}
+
+	return 200, "Delete Ok"
+}
+
 func InsertProduct(body, User string) (int, string) {
 	var t models.Product
 	err := json.Unmarshal([]byte(body), &t)
@@ -33,45 +51,6 @@ func InsertProduct(body, User string) (int, string) {
 	}
 
 	return 200, "{ ProductID: " + strconv.Itoa(int(result)) + "}"
-}
-
-func UpdateProduct(body, User string, id int) (int, string) {
-	var t models.Product
-	err := json.Unmarshal([]byte(body), &t)
-	if err != nil {
-		return 400, "The request data is incorrect: " + err.Error()
-	}
-
-	isAdmin, msg := db.UserIsAdmin(User)
-	if !isAdmin {
-		return 400, msg
-	}
-
-	t.ProdId = id
-	err2 := db.UpdateProduct(t)
-	if err2 != nil {
-		return 400, "Error when updating into the database: " + strconv.Itoa(id) + " > " + err2.Error()
-	}
-
-	return 200, "Update Ok"
-}
-
-func DeleteProduct(User string, id int) (int, string) {
-	if id == 0 {
-		return 400, "The request data (ID) is incorrect"
-	}
-
-	isAdmin, msg := db.UserIsAdmin(User)
-	if !isAdmin {
-		return 400, msg
-	}
-
-	err := db.DeleteProduct(id)
-	if err != nil {
-		return 400, "Error when deleting into the database: " + strconv.Itoa(id) + " > " + err.Error()
-	}
-
-	return 200, "Delete Ok"
 }
 
 func SelectProducts(request events.APIGatewayV2HTTPRequest) (int, string) {
@@ -139,6 +118,27 @@ func UpdateDiscount(body, User string, id int) (int, string) {
 	err2 := db.UpdateDiscount(t)
 	if err2 != nil {
 		return 400, "Error when updating discount into the database: " + strconv.Itoa(id) + " > " + err2.Error()
+	}
+
+	return 200, "Update Ok"
+}
+
+func UpdateProduct(body, User string, id int) (int, string) {
+	var t models.Product
+	err := json.Unmarshal([]byte(body), &t)
+	if err != nil {
+		return 400, "The request data is incorrect: " + err.Error()
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	t.ProdId = id
+	err2 := db.UpdateProduct(t)
+	if err2 != nil {
+		return 400, "Error when updating into the database: " + strconv.Itoa(id) + " > " + err2.Error()
 	}
 
 	return 200, "Update Ok"
