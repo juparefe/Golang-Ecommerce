@@ -242,7 +242,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 
 func UpdateDiscount(p models.Product) error {
 	fmt.Println("Executing UpdateDiscount in database")
-	if p.ProdDiscount <= 0 {
+	if p.ProdDiscount < 0 {
 		return errors.New("the discount to modify must be greater than 0")
 	}
 	err := DbConnect()
