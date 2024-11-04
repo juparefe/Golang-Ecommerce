@@ -83,6 +83,7 @@ type Product struct {
 	ProdSearch      string  `json:"search,omitempty"`
 	ProdStock       int     `json:"prodStock"`
 	ProdTitle       string  `json:"prodTitle"`
+	ProdTop         bool    `json:"prodTop"`
 	ProdUpdated     string  `json:"prodUpdated"`
 }
 

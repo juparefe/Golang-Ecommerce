@@ -32,7 +32,7 @@ func UpdateUser(u models.User, User string) error {
 		return err
 	}
 
-	fmt.Println("UpdateUser > Successfull execution")
+	fmt.Println("UpdateUser > Successful execution")
 	return nil
 }
 
@@ -53,7 +53,7 @@ func UpdateUserRole(u models.UserRole, User string) error {
 		return err
 	}
 
-	fmt.Println("UpdateUser > Successfull execution")
+	fmt.Println("UpdateUser > Successful execution")
 	return nil
 }
 
@@ -85,7 +85,7 @@ func SelectUser(UserId string) (models.User, error) {
 	User.UserFirstName = firstName.String
 	User.UserLastName = lastName.String
 	User.UserDateUpg = dateUpg.String
-	fmt.Println("SelectUser > Successfull execution")
+	fmt.Println("SelectUser > Successful execution")
 	return User, nil
 }
 
@@ -143,7 +143,7 @@ func SelectUsers(Page int) (models.ListUsers, error) {
 		u.UserDateUpg = dateUpg.String
 		User = append(User, u)
 	}
-	fmt.Println("SelectUsers > Successfull execution")
+	fmt.Println("SelectUsers > Successful execution")
 	lu.Data = User
 
 	return lu, nil

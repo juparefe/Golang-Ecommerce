@@ -67,7 +67,7 @@ func InsertProduct(p models.Product) (int64, error) {
 		return 0, err2
 	}
 
-	fmt.Println("InsertProduct > Successfull execution: ", LastInsertId)
+	fmt.Println("InsertProduct > Successful execution: ", LastInsertId)
 	return LastInsertId, nil
 }
 
@@ -95,7 +95,7 @@ func UpdateProduct(p models.Product) error {
 		return err
 	}
 
-	fmt.Println("UpdateProduct > Successfull execution")
+	fmt.Println("UpdateProduct > Successful execution")
 	return nil
 }
 
@@ -116,7 +116,7 @@ func DeleteProduct(id int) error {
 		return err
 	}
 
-	fmt.Println("DeleteProduct > Successfull execution")
+	fmt.Println("DeleteProduct > Successful execution")
 	return nil
 }
 
@@ -131,21 +131,42 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	defer Db.Close()
 
 	var limit, script, scriptCount, where string
-	script = "SELECT Prod_Id, Prod_Title, Prod_Description, Prod_CreatedAt, Prod_Updated, Prod_Discount, Prod_Price, Prod_Path, Prod_CategoryId, Prod_Stock FROM products"
+	script = `
+		SELECT 
+			p.Prod_Id,
+			p.Prod_Title,
+			p.Prod_Description,
+			p.Prod_CreatedAt,
+			p.Prod_Updated,
+			p.Prod_Discount,
+			p.Prod_Price,
+			p.Prod_Path,
+			p.Prod_CategoryId,
+			p.Prod_Stock,
+			(SELECT COUNT(od.OD_ProdId) FROM orders_detail AS od WHERE od.OD_ProdId = p.Prod_Id) AS SalesCount,
+            (
+                SELECT CASE WHEN RANK() OVER (ORDER BY COUNT(od.OD_ProdId) DESC) <= 15 THEN TRUE ELSE FALSE END
+                FROM orders_detail AS od
+                WHERE od.OD_ProdId = p.Prod_Id
+                GROUP BY od.OD_ProdId
+            ) AS ProdTop
+		FROM products AS p`
+
 	scriptCount = "SELECT COUNT(*) as records FROM products "
 	switch choice {
 	case "C":
-		where = " WHERE Prod_CategoryId = " + strconv.Itoa(p.ProdCategId)
+		where = " WHERE p.Prod_CategoryId = " + strconv.Itoa(p.ProdCategId)
 	case "K":
-		join := " JOIN category ON Prod_CategoryId = Categ_Id AND Categ_Path LIKE '%" + strings.ToUpper(p.ProdCategPath) + "%'"
-		script += join
-		scriptCount += join
+		joinCategory := " JOIN category AS c ON p.Prod_CategoryId = c.Categ_Id AND c.Categ_Path LIKE '%" + strings.ToUpper(p.ProdCategPath) + "%'"
+		script += joinCategory
+		scriptCount += joinCategory
+		script += joinCategory
 	case "P":
-		where = " WHERE Prod_Id = " + strconv.Itoa(p.ProdId)
+		where = " WHERE p.Prod_Id = " + strconv.Itoa(p.ProdId)
 	case "S":
-		where = " WHERE UCASE(CONCAT(Prod_Title, Prod_Description)) LIKE '%" + strings.ToUpper(p.ProdSearch) + "%'"
+		where = " WHERE UCASE(CONCAT(p.Prod_Title, p.Prod_Description)) LIKE '%" + strings.ToUpper(p.ProdSearch) + "%'"
 	case "U":
-		where = " WHERE UCASE(Prod_Path) LIKE '%" + strings.ToUpper(p.ProdPath) + "%'"
+		where = " WHERE UCASE(p.Prod_Path) LIKE '%" + strings.ToUpper(p.ProdPath) + "%'"
 	}
 	scriptCount += where
 
@@ -181,19 +202,19 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	if len(orderField) > 0 {
 		switch orderField {
 		case "C":
-			orderBy = " ORDER BY Prod_CategoryId "
+			orderBy = " ORDER BY p.Prod_CategoryId "
 		case "D":
-			orderBy = " ORDER BY Prod_Description "
+			orderBy = " ORDER BY p.Prod_Description "
 		case "F":
-			orderBy = " ORDER BY Prod_CreatedAt "
+			orderBy = " ORDER BY p.Prod_CreatedAt "
 		case "I":
-			orderBy = " ORDER BY Prod_Id "
+			orderBy = " ORDER BY p.Prod_Id "
 		case "P":
-			orderBy = " ORDER BY Prod_Price "
+			orderBy = " ORDER BY p.Prod_Price "
 		case "S":
-			orderBy = " ORDER BY Prod_Stock "
+			orderBy = " ORDER BY p.Prod_Stock "
 		case "T":
-			orderBy = " ORDER BY Prod_Title "
+			orderBy = " ORDER BY p.Prod_Title "
 		}
 
 		if orderType == "D" {
@@ -216,8 +237,9 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		var ProdDiscount, ProdPrice sql.NullFloat64
 		var ProdPath sql.NullString
 		var ProdCategoryId, ProdStock sql.NullInt32
+		var ProdTop sql.NullBool
 
-		err := rows.Scan(&ProdId, &ProdTitle, &ProdDescription, &ProdCreatedAt, &ProdUpdated, &ProdDiscount, &ProdPrice, &ProdPath, &ProdCategoryId, &ProdStock)
+		err := rows.Scan(&ProdId, &ProdTitle, &ProdDescription, &ProdCreatedAt, &ProdUpdated, &ProdDiscount, &ProdPrice, &ProdPath, &ProdCategoryId, &ProdStock, &ProdTop)
 		if err != nil {
 			return ProductRes, err
 		}
@@ -232,11 +254,12 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		p.ProdPath = ProdPath.String
 		p.ProdCategId = int(ProdCategoryId.Int32)
 		p.ProdStock = int(ProdStock.Int32)
+		p.ProdTop = ProdTop.Bool
 		Prod = append(Prod, p)
 	}
 	ProductRes.TotalItems = records
 	ProductRes.Data = Prod
-	fmt.Println("SelectProducts > Successfull execution")
+	fmt.Println("SelectProducts > Successful execution")
 	return ProductRes, nil
 }
 
@@ -260,7 +283,7 @@ func UpdateDiscount(p models.Product) error {
 		return err
 	}
 
-	fmt.Println("UpdateDiscount > Successfull execution")
+	fmt.Println("UpdateDiscount > Successful execution")
 	return nil
 }
 
@@ -284,6 +307,6 @@ func UpdateStock(p models.Product) error {
 		return err
 	}
 
-	fmt.Println("UpdateStock > Successfull execution")
+	fmt.Println("UpdateStock > Successful execution")
 	return nil
 }

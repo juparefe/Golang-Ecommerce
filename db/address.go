@@ -29,7 +29,7 @@ func InsertAddress(a models.Address, User string) error {
 		return err
 	}
 
-	fmt.Println("InsertAddress > Successfull execution")
+	fmt.Println("InsertAddress > Successful execution")
 	return nil
 }
 
@@ -52,7 +52,7 @@ func AddressExists(User string, id int) (error, bool) {
 	var value string
 	rows.Next()
 	rows.Scan(&value)
-	fmt.Println("AddressExists > Successfull execution: ", value)
+	fmt.Println("AddressExists > Successful execution: ", value)
 
 	if value == "1" {
 		return nil, true
@@ -84,7 +84,7 @@ func UpdateAddress(a models.Address) error {
 		return err
 	}
 
-	fmt.Println("UpdateAddress > Successfull execution")
+	fmt.Println("UpdateAddress > Successful execution")
 	return nil
 }
 
@@ -104,7 +104,7 @@ func DeleteAddress(id int) error {
 		return err
 	}
 
-	fmt.Println("DeleteAddress > Successfull execution")
+	fmt.Println("DeleteAddress > Successful execution")
 	return nil
 }
 
@@ -147,6 +147,6 @@ func SelectAddress(User string) ([]models.Address, error) {
 		Addresses = append(Addresses, a)
 	}
 
-	fmt.Println("SelectAddresses > Successfull execution")
+	fmt.Println("SelectAddresses > Successful execution")
 	return Addresses, nil
 }

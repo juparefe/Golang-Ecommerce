@@ -122,7 +122,7 @@ func SelectCurrencyByTarget(BaseCurrency, TargetCurrency string) (models.Currenc
 		Currency.CurrencyRate = currencyRate.Float64
 		Currency.LastUpdated = lastUpdatedString.String
 
-		fmt.Println("SelectCurrency > Successfull execution")
+		fmt.Println("SelectCurrency > Successful execution")
 		return Currency, nil
 	} else {
 		fmt.Println("Data is not from today")

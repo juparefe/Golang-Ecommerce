@@ -35,7 +35,7 @@ func InsertCategory(c models.Category) (int64, error) {
 		return 0, err2
 	}
 
-	fmt.Println("InsertCategory > Successfull execution: ", LastInsertId)
+	fmt.Println("InsertCategory > Successful execution: ", LastInsertId)
 	return LastInsertId, nil
 
 }
@@ -67,7 +67,7 @@ func UpdateCategory(c models.Category) error {
 		return err
 	}
 
-	fmt.Println("UpdateCategory > Successfull execution")
+	fmt.Println("UpdateCategory > Successful execution")
 	return nil
 }
 
@@ -88,7 +88,7 @@ func DeleteCategory(id int) error {
 		return err
 	}
 
-	fmt.Println("DeleteCategory > Successfull execution")
+	fmt.Println("DeleteCategory > Successful execution")
 	return nil
 }
 
@@ -133,7 +133,7 @@ func SelectCategories(CategId int, Slug string) ([]models.Category, error) {
 		Categ = append(Categ, c)
 	}
 
-	fmt.Println("SelectCategory > Successfull execution")
+	fmt.Println("SelectCategory > Successful execution")
 	return Categ, nil
 }
 
@@ -181,6 +181,6 @@ func SelectTopCategories() ([]models.Category, error) {
 		Categ = append(Categ, c)
 	}
 
-	fmt.Println("SelectTopCategories > Successfull execution")
+	fmt.Println("SelectTopCategories > Successful execution")
 	return Categ, nil
 }

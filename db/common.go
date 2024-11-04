@@ -64,7 +64,7 @@ func UserIsAdmin(userUUID string) (bool, string) {
 	var value string
 	rows.Next()
 	rows.Scan(&value)
-	fmt.Println("UserIsAdmin > Successfull execution: ", value)
+	fmt.Println("UserIsAdmin > Successful execution: ", value)
 
 	if value == "1" {
 		return true, ""
@@ -89,7 +89,7 @@ func UserIsSuperAdmin(userUUID string) (bool, string) {
 	var value string
 	rows.Next()
 	rows.Scan(&value)
-	fmt.Println("UserIsSuperAdmin > Successfull execution: ", value)
+	fmt.Println("UserIsSuperAdmin > Successful execution: ", value)
 
 	if value == "1" {
 		return true, ""
@@ -114,7 +114,7 @@ func UserExists(userUUID string) (error, bool) {
 	var value string
 	rows.Next()
 	rows.Scan(&value)
-	fmt.Println("UserExists > Successfull execution: ", value)
+	fmt.Println("UserExists > Successful execution: ", value)
 
 	if value == "1" {
 		return nil, true
