@@ -80,6 +80,7 @@ type Product struct {
 	ProdDiscount    float64 `json:"prodDiscount,omitempty"`
 	ProdPath        string  `json:"prodPath"`
 	ProdPrice       float64 `json:"prodPrice,omitempty"`
+	ProdSales       int     `json:"prodSales"`
 	ProdSearch      string  `json:"search,omitempty"`
 	ProdStock       int     `json:"prodStock"`
 	ProdTitle       string  `json:"prodTitle"`

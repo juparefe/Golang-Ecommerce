@@ -143,7 +143,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 			p.Prod_Path,
 			p.Prod_CategoryId,
 			p.Prod_Stock,
-			(SELECT COUNT(od.OD_ProdId) FROM orders_detail AS od WHERE od.OD_ProdId = p.Prod_Id) AS SalesCount,
+			(SELECT COUNT(od.OD_ProdId) FROM orders_detail AS od WHERE od.OD_ProdId = p.Prod_Id) AS ProdSales,
             (
                 SELECT CASE WHEN RANK() OVER (ORDER BY COUNT(od.OD_ProdId) DESC) <= 15 THEN TRUE ELSE FALSE END
                 FROM orders_detail AS od
@@ -231,7 +231,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	}
 	for rows.Next() {
 		var p models.Product
-		var ProdId, SalesCount sql.NullInt32
+		var ProdId, ProdSales sql.NullInt32
 		var ProdTitle, ProdDescription sql.NullString
 		var ProdCreatedAt, ProdUpdated sql.NullString
 		var ProdDiscount, ProdPrice sql.NullFloat64
@@ -241,7 +241,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 
 		err := rows.Scan(
 			&ProdId,
-			&SalesCount,
+			&ProdSales,
 			&ProdTitle,
 			&ProdDescription,
 			&ProdCreatedAt,
@@ -257,6 +257,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		}
 
 		p.ProdId = int(ProdId.Int32)
+		p.ProdSales = int(ProdId.Int32)
 		p.ProdTitle = ProdTitle.String
 		p.ProdDescription = ProdDescription.String
 		p.ProdCreatedAt = ProdCreatedAt.String
