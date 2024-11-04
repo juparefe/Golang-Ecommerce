@@ -231,7 +231,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 	}
 	for rows.Next() {
 		var p models.Product
-		var ProdId sql.NullInt32
+		var ProdId, SalesCount sql.NullInt32
 		var ProdTitle, ProdDescription sql.NullString
 		var ProdCreatedAt, ProdUpdated sql.NullString
 		var ProdDiscount, ProdPrice sql.NullFloat64
@@ -239,7 +239,19 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		var ProdCategoryId, ProdStock sql.NullInt32
 		var ProdTop sql.NullBool
 
-		err := rows.Scan(&ProdId, &ProdTitle, &ProdDescription, &ProdCreatedAt, &ProdUpdated, &ProdDiscount, &ProdPrice, &ProdPath, &ProdCategoryId, &ProdStock, &ProdTop)
+		err := rows.Scan(
+			&ProdId,
+			&SalesCount,
+			&ProdTitle,
+			&ProdDescription,
+			&ProdCreatedAt,
+			&ProdUpdated,
+			&ProdDiscount,
+			&ProdPrice,
+			&ProdPath,
+			&ProdCategoryId,
+			&ProdStock,
+			&ProdTop)
 		if err != nil {
 			return ProductRes, err
 		}
