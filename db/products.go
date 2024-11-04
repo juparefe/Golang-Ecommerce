@@ -266,7 +266,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		p.ProdPath = ProdPath.String
 		p.ProdCategId = int(ProdCategoryId.Int32)
 		p.ProdStock = int(ProdStock.Int32)
-		p.ProdSales = int(ProdId.Int32)
+		p.ProdSales = int(ProdSales.Int32)
 		p.ProdTop = ProdTop.Bool
 		Prod = append(Prod, p)
 	}
