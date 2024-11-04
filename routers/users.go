@@ -34,12 +34,12 @@ func UpdateUser(body, User string) (int, string) {
 }
 
 func UpdateUserRole(body, User string) (int, string) {
-	var t models.UserRole
+	var t models.User
 	err := json.Unmarshal([]byte(body), &t)
 	if err != nil {
 		return 400, "The request data is incorrect: " + err.Error()
 	}
-	if len(t.UserRole) == 0 {
+	if t.UserStatus < 0 || t.UserStatus > 3 {
 		return 400, "You must specify the role of the user to update"
 	}
 

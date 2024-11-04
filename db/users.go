@@ -10,53 +10,6 @@ import (
 	"github.com/juparefe/Golang-Ecommerce/tools"
 )
 
-func UpdateUser(u models.User, User string) error {
-	fmt.Println("Executing UpdateUser in database")
-	err := DbConnect()
-	if err != nil {
-		return err
-	}
-	defer Db.Close()
-
-	script := "UPDATE users SET "
-
-	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
-	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
-	script = tools.CreateScript(script, "User_DateUpg", "S", tools.DateMySQL(), 0, 0)
-	script += " WHERE User_UUID = '" + User + "';"
-
-	_, err = Db.Exec(script)
-	if err != nil {
-		fmt.Println("Script UpdateUser: ", script)
-		fmt.Println("Error Updating user:", err.Error())
-		return err
-	}
-
-	fmt.Println("UpdateUser > Successful execution")
-	return nil
-}
-
-func UpdateUserRole(u models.UserRole, User string) error {
-	fmt.Println("Executing UpdateUserRole in database")
-	err := DbConnect()
-	if err != nil {
-		return err
-	}
-	defer Db.Close()
-
-	script := "UPDATE users SET User_Status=" + u.UserRole + " WHERE User_UUID = '" + User + "';"
-
-	_, err = Db.Exec(script)
-	if err != nil {
-		fmt.Println("Script UpdateUserRole: ", script)
-		fmt.Println("Error Updating user role:", err.Error())
-		return err
-	}
-
-	fmt.Println("UpdateUser > Successful execution")
-	return nil
-}
-
 func SelectUser(UserId string) (models.User, error) {
 	fmt.Println("Executing SelectUser in database")
 	User := models.User{}
@@ -147,4 +100,55 @@ func SelectUsers(Page int) (models.ListUsers, error) {
 	lu.Data = User
 
 	return lu, nil
+}
+
+func UpdateUser(u models.User, User string) error {
+	fmt.Println("Executing UpdateUser in database")
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	script := "UPDATE users SET "
+
+	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
+	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
+	script = tools.CreateScript(script, "User_DateUpg", "S", tools.DateMySQL(), 0, 0)
+	script += " WHERE User_UUID = '" + User + "';"
+
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Script UpdateUser: ", script)
+		fmt.Println("Error Updating user:", err.Error())
+		return err
+	}
+
+	fmt.Println("UpdateUser > Successful execution")
+	return nil
+}
+
+func UpdateUserRole(u models.User, User string) error {
+	fmt.Println("Executing UpdateUserRole in database")
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	script := "UPDATE users SET "
+	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
+	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
+	script = tools.CreateScript(script, "User_Status", "N", "", u.UserStatus, 0)
+	script += " WHERE User_UUID = '" + User + "';"
+
+	_, err = Db.Exec(script)
+	if err != nil {
+		fmt.Println("Script UpdateUserRole: ", script)
+		fmt.Println("Error Updating user role:", err.Error())
+		return err
+	}
+
+	fmt.Println("UpdateUser > Successful execution")
+	return nil
 }
