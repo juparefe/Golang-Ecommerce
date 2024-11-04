@@ -78,7 +78,7 @@ func UserIsSuperAdmin(userUUID string) (bool, string) {
 		return false, err.Error()
 	}
 	defer Db.Close()
-	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status=2;"
+	script := "SELECT 1 FROM users WHERE User_UUID='" + userUUID + "' AND User_Status=1;"
 
 	rows, err := Db.Query(script)
 	if err != nil {

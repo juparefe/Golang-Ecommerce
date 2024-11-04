@@ -10,6 +10,50 @@ import (
 	"github.com/juparefe/Golang-Ecommerce/models"
 )
 
+func SelectUser(body, User string) (int, string) {
+	_, found := db.UserExists(User)
+	if !found {
+		return 400, "There is no user with that UUID '" + User + "'"
+	}
+
+	row, err := db.SelectUser(User)
+	fmt.Println("Row with user: ", row)
+	if err != nil {
+		return 400, "Error trying to get user: " + err.Error()
+	}
+
+	respJson, err2 := json.Marshal(row)
+	if err2 != nil {
+		return 500, "Error trying to convert to JSON the user" + err2.Error()
+	}
+	return 200, string(respJson)
+}
+
+func SelectUsers(body, User string, request events.APIGatewayV2HTTPRequest) (int, string) {
+	var Page int
+	if len(request.QueryStringParameters["page"]) == 0 {
+		Page = 1
+	} else {
+		Page, _ = strconv.Atoi(request.QueryStringParameters["page"])
+	}
+
+	isAdmin, msg := db.UserIsAdmin(User)
+	if !isAdmin {
+		return 400, msg
+	}
+
+	row, err := db.SelectUsers(Page)
+	if err != nil {
+		return 400, "Error trying to get users: " + err.Error()
+	}
+
+	respJson, err2 := json.Marshal(row)
+	if err2 != nil {
+		return 500, "Error trying to convert to JSON the users" + err2.Error()
+	}
+	return 200, string(respJson)
+}
+
 func UpdateUser(body, User string) (int, string) {
 	var t models.User
 	err := json.Unmarshal([]byte(body), &t)
@@ -59,48 +103,4 @@ func UpdateUserRole(body, User string) (int, string) {
 	}
 
 	return 200, "Update Ok"
-}
-
-func SelectUser(body, User string) (int, string) {
-	_, found := db.UserExists(User)
-	if !found {
-		return 400, "There is no user with that UUID '" + User + "'"
-	}
-
-	row, err := db.SelectUser(User)
-	fmt.Println("Row with user: ", row)
-	if err != nil {
-		return 400, "Error trying to get user: " + err.Error()
-	}
-
-	respJson, err2 := json.Marshal(row)
-	if err2 != nil {
-		return 500, "Error trying to convert to JSON the user" + err2.Error()
-	}
-	return 200, string(respJson)
-}
-
-func SelectUsers(body, User string, request events.APIGatewayV2HTTPRequest) (int, string) {
-	var Page int
-	if len(request.QueryStringParameters["page"]) == 0 {
-		Page = 1
-	} else {
-		Page, _ = strconv.Atoi(request.QueryStringParameters["page"])
-	}
-
-	isAdmin, msg := db.UserIsAdmin(User)
-	if !isAdmin {
-		return 400, msg
-	}
-
-	row, err := db.SelectUsers(Page)
-	if err != nil {
-		return 400, "Error trying to get users: " + err.Error()
-	}
-
-	respJson, err2 := json.Marshal(row)
-	if err2 != nil {
-		return 500, "Error trying to convert to JSON the users" + err2.Error()
-	}
-	return 200, string(respJson)
 }
