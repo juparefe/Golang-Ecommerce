@@ -160,7 +160,6 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
 		joinCategory := " JOIN category AS c ON p.Prod_CategoryId = c.Categ_Id AND c.Categ_Path LIKE '%" + strings.ToUpper(p.ProdCategPath) + "%'"
 		script += joinCategory
 		scriptCount += joinCategory
-		script += joinCategory
 	case "P":
 		where = " WHERE p.Prod_Id = " + strconv.Itoa(p.ProdId)
 	case "S":
