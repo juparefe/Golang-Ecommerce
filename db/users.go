@@ -140,8 +140,7 @@ func UpdateUserRole(u models.User, User string) error {
 	script = tools.CreateScript(script, "User_FirstName", "S", u.UserFirstName, 0, 0)
 	script = tools.CreateScript(script, "User_LastName", "S", u.UserLastName, 0, 0)
 	script = tools.CreateScript(script, "User_Status", "N", "", u.UserStatus, 0)
-	script += " WHERE User_UUID = '" + User + "';"
-	fmt.Println("Script UpdateUserRole: ", script)
+	script += " WHERE User_UUID = '" + u.UserUUID + "';"
 
 	_, err = Db.Exec(script)
 	if err != nil {
