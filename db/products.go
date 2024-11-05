@@ -152,7 +152,7 @@ func SelectProducts(p models.Product, choice, orderType, orderField string, page
             ) AS ProdTop
 		FROM products AS p`
 
-	scriptCount = "SELECT COUNT(*) as records FROM products "
+	scriptCount = "SELECT COUNT(*) as records FROM products AS p "
 	switch choice {
 	case "C":
 		where = " WHERE p.Prod_CategoryId = " + strconv.Itoa(p.ProdCategId)
