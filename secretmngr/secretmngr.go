@@ -3,6 +3,7 @@ package secretmngr
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
@@ -11,7 +12,30 @@ import (
 	models "github.com/juparefe/Golang-Ecommerce/models"
 )
 
-// De esta forma se crea una lambda proxy por fuera de la VPC que accede a secrets manager
+// De esta forma se recuperan los secretos desde una variable de entorno y no genera costos
+func GetSecretEnvironment(secretName string) (models.SecretRDSJson, error) {
+	fmt.Println("Getting secret value from environment variable: ", secretName)
+
+	secretData := models.SecretRDSJson{}
+
+	// Obtener el secreto desde la variable de entorno
+	secretJSON := os.Getenv(secretName)
+	if secretJSON == "" {
+		return secretData, fmt.Errorf("secret %s not found in environment variables", secretName)
+	}
+
+	// Parsear el JSON almacenado en la variable de entorno
+	err := json.Unmarshal([]byte(secretJSON), &secretData)
+	if err != nil {
+		fmt.Println("Error unmarshalling secret from environment variable: ", secretName, err.Error())
+		return secretData, err
+	}
+
+	fmt.Println("Secret data OK: ", secretData)
+	return secretData, nil
+}
+
+// De esta forma se crea una lambda proxy por fuera de la VPC que accede a secrets manager y genera costos
 func GetSecretLambdaProxy(secretName string) (models.SecretRDSJson, error) {
 	fmt.Println("Getting secret value from lambda proxy: ", secretName)
 	const LambdaProxyName = "secretsmanager-proxy"

@@ -15,7 +15,7 @@ var err error
 var Db *sql.DB
 
 func ReadSecret() error {
-	SecretModel, err = secretmngr.GetSecretLambdaProxy(os.Getenv("SecretName"))
+	SecretModel, err = secretmngr.GetSecretEnvironment(os.Getenv("SecretName"))
 	return err
 }
 
