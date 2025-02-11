@@ -93,6 +93,10 @@ type ProductRes struct {
 	Data       []Product `json:"data"`
 }
 
+type Request struct {
+	SecretName string `json:"secretName"`
+}
+
 type User struct {
 	UserUUID      string `json:"userUUID"`
 	UserEmail     string `json:"userEmail"`
