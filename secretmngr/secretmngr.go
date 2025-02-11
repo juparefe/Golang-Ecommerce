@@ -13,6 +13,7 @@ import (
 
 // De esta forma se crea una lambda proxy por fuera de la VPC que accede a secrets manager
 func GetSecretLambdaProxy(secretName string) (models.SecretRDSJson, error) {
+	fmt.Println("Getting secret value from lambda proxy: ", secretName)
 	const LambdaProxyName = "secretsmanager-proxy"
 	secretData := models.SecretRDSJson{}
 	svc := lambda.NewFromConfig(awsgo.Config)
@@ -22,6 +23,7 @@ func GetSecretLambdaProxy(secretName string) (models.SecretRDSJson, error) {
 		fmt.Println("Error getting secret value ", secretName, ": ", err.Error())
 		return secretData, err
 	}
+	fmt.Println("Payload from lambda proxy: ", payload)
 	// Invocar la Lambda Proxy
 	secretValue, err := svc.Invoke(awsgo.Context, &lambda.InvokeInput{
 		FunctionName: aws.String(LambdaProxyName),
@@ -30,13 +32,14 @@ func GetSecretLambdaProxy(secretName string) (models.SecretRDSJson, error) {
 	if err != nil {
 		return secretData, fmt.Errorf("error invoking lambda proxy: %v", err)
 	}
+	fmt.Println("SecretValue from lambda proxy: ", secretValue)
 	// Procesar el secretValue y guardarlo en secretData
 	err = json.Unmarshal(secretValue.Payload, &secretData)
 	if err != nil {
 		fmt.Println("Error unmarshalling secret: ", secretName, err.Error())
 		return secretData, err
 	}
-	fmt.Println("Secret data OK: ")
+	fmt.Println("Secret data OK: ", secretData)
 	return secretData, nil
 }
 
